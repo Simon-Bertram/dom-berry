@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Hero from "@/components/hero";
 
 export default function Home() {
@@ -20,12 +21,12 @@ export default function Home() {
             >
               View Portfolio
             </button>
-            <button
+            <Link
               className="rounded-lg border-2 border-white px-8 py-3 font-semibold text-lg text-white transition-colors hover:bg-white hover:text-black"
-              type="button"
+              href="/contact"
             >
               Contact Us
-            </button>
+            </Link>
           </div>
         </div>
       }
