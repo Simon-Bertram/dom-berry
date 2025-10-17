@@ -1,13 +1,34 @@
 "use client";
 
+import Hero from "@/components/hero";
+
 export default function Home() {
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
-        </section>
-      </div>
-    </div>
+    <Hero
+      overlayContent={
+        <div className="space-y-6">
+          <h1 className="font-bold text-5xl tracking-tight sm:text-6xl lg:text-7xl">
+            Dom Berry
+          </h1>
+          <p className="text-white/90 text-xl sm:text-2xl">
+            Professional filmmaking services
+          </p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <button
+              className="rounded-lg bg-white px-8 py-3 font-semibold text-black text-lg transition-colors hover:bg-white/90"
+              type="button"
+            >
+              View Portfolio
+            </button>
+            <button
+              className="rounded-lg border-2 border-white px-8 py-3 font-semibold text-lg text-white transition-colors hover:bg-white hover:text-black"
+              type="button"
+            >
+              Contact Us
+            </button>
+          </div>
+        </div>
+      }
+    />
   );
 }
