@@ -35,6 +35,7 @@ export default function ContactForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isPending, startTransition] = useTransition();
   const [visionLength, setVisionLength] = useState(0);
+  const [formLoadTime] = useState(Date.now());
   const visionRef = useRef<HTMLTextAreaElement>(null);
 
   // Character count for vision field
@@ -103,6 +104,9 @@ export default function ContactForm() {
             tabIndex={-1}
             type="text"
           />
+
+          {/* Timestamp field for bot detection */}
+          <input name="formTimestamp" type="hidden" value={formLoadTime} />
 
           <StatusMessage
             isPending={isPending}

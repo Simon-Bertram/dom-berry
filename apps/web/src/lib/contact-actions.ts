@@ -10,6 +10,7 @@ const VALIDATION_LIMITS = {
   VISION_MIN_LENGTH: 10,
   VISION_MAX_LENGTH: 2000,
   REQUEST_TIMEOUT_MS: 10_000,
+  MIN_FORM_SUBMISSION_TIME_MS: 2000,
 } as const;
 
 // HTTP status codes
@@ -27,6 +28,7 @@ type ContactFormData = {
   projectBudget: string;
   vision: string;
   website?: string; // Honeypot field
+  formTimestamp?: string; // Timestamp for bot detection
 };
 
 type ContactFormResult = {
@@ -78,6 +80,8 @@ const contactFormSchema = z.object({
     .refine((val) => !val || val === "", {
       message: "Spam detected",
     }),
+  // Timestamp field for bot detection
+  formTimestamp: z.string().optional(),
 });
 
 /**
@@ -105,6 +109,7 @@ function extractAndSanitizeFormData(formData: FormData): ContactFormData {
     projectBudget: getStringValue("projectBudget"),
     vision: getStringValue("vision"),
     website: getOptionalStringValue("website"), // Honeypot field
+    formTimestamp: getOptionalStringValue("formTimestamp"), // Timestamp for bot detection
   };
 }
 
@@ -124,6 +129,23 @@ function formatValidationErrors(issues: z.ZodIssue[]): Record<string, string> {
   }
 
   return errors;
+}
+
+/**
+ * Validates form submission timing to detect bots
+ */
+function validateSubmissionTiming(data: ContactFormData): {
+  isValid: boolean;
+  message?: string;
+} {
+  const timeDiff = Date.now() - Number(data.formTimestamp || 0);
+  if (timeDiff < VALIDATION_LIMITS.MIN_FORM_SUBMISSION_TIME_MS) {
+    return {
+      isValid: false,
+      message: "Form submitted too quickly. Please try again.",
+    };
+  }
+  return { isValid: true };
 }
 
 /**
@@ -167,6 +189,16 @@ export async function submitContactForm(
         success: false,
         message: "Please correct the errors below and try again.",
         fieldErrors,
+      };
+    }
+
+    // Check timestamp for bot detection
+    const timingValidation = validateSubmissionTiming(data);
+    if (!timingValidation.isValid) {
+      logFormSubmission(data, false, "Form submitted too quickly");
+      return {
+        success: false,
+        message: timingValidation.message,
       };
     }
 

@@ -9,6 +9,7 @@ type ContactFormData = {
   projectType: string;
   projectBudget: string;
   vision: string;
+  formTimestamp?: string;
 };
 
 type EmailOptions = {
@@ -27,6 +28,7 @@ type EmailResponse = {
 // Constants
 const MOCK_DELAY_MS = 500;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_FORM_SUBMISSION_TIME_MS = 2000;
 const RATE_LIMIT = {
   MAX_REQUESTS: 5,
   WINDOW_MS: 60_000,
@@ -96,7 +98,8 @@ export async function POST(request: NextRequest) {
     }
 
     const data: ContactFormData = await request.json();
-    const { name, email, projectType, projectBudget, vision } = data;
+    const { name, email, projectType, projectBudget, vision, formTimestamp } =
+      data;
 
     // 1. Server-side Validation
     const hasRequiredFields =
@@ -112,6 +115,16 @@ export async function POST(request: NextRequest) {
     if (!EMAIL_REGEX.test(email)) {
       return NextResponse.json(
         { error: "Invalid email format." },
+        { status: 400 }
+      );
+    }
+
+    // Check timestamp for bot detection
+    const timestamp = Number(formTimestamp || 0);
+    const timeDiff = Date.now() - timestamp;
+    if (timeDiff < MIN_FORM_SUBMISSION_TIME_MS) {
+      return NextResponse.json(
+        { error: "Form submitted too quickly." },
         { status: 400 }
       );
     }
