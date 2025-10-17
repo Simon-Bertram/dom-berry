@@ -1,4 +1,3 @@
-import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -7,7 +6,7 @@ type NavItem<T extends string = string> = {
   label: string;
 };
 
-const navItems: NavItem<Route>[] = [
+export const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/portfolio", label: "Portfolio" },
@@ -16,15 +15,24 @@ const navItems: NavItem<Route>[] = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function NavItems() {
+type NavItemsProps = {
+  onItemClick?: () => void;
+  className?: string;
+};
+
+export function NavItems({
+  onItemClick,
+  className = "flex items-center gap-6",
+}: NavItemsProps) {
   const pathname = usePathname();
   return (
-    <nav className="flex items-center gap-6">
+    <nav className={className}>
       {navItems.map((item) => (
         <Link
           className={`font-medium text-sm transition-colors hover:text-foreground/90 ${pathname === item.href ? "text-foreground" : "text-foreground/70"}`}
-          href={item.href}
+          href={item.href as any}
           key={item.href}
+          onClick={onItemClick}
         >
           {item.label}
         </Link>
