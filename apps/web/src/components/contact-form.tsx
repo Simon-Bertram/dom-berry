@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ChevronDown,
   Mail,
   MessageSquare,
   PenTool,
@@ -8,27 +9,10 @@ import {
   User,
 } from "lucide-react";
 import Form from "next/form";
-import { useState } from "react";
-import { z } from "zod";
-
-// Define the Zod schema for form validation
-const contactFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  projectType: z.string().min(1, {
-    message: "Please select a project type.",
-  }),
-  projectBudget: z.string().min(1, {
-    message: "Please select a budget range.",
-  }),
-  vision: z.string().min(10, {
-    message: "Please provide at least 10 characters describing your vision.",
-  }),
-});
+import { useEffect, useRef, useState, useTransition } from "react";
+import { submitContactForm } from "@/lib/contact-actions";
+import { FormField } from "./form-field";
+import { StatusMessage } from "./status-message";
 
 // Define the options for the dropdowns
 const PROJECT_TYPES = [
@@ -49,63 +33,29 @@ export default function ContactForm() {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isPending, startTransition] = useTransition();
+  const [visionLength, setVisionLength] = useState(0);
+  const visionRef = useRef<HTMLTextAreaElement>(null);
 
-  const validateFormData = (formData: FormData) => {
-    const data = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      projectType: formData.get("projectType") as string,
-      projectBudget: formData.get("projectBudget") as string,
-      vision: formData.get("vision") as string,
-    };
-
-    return contactFormSchema.safeParse(data);
-  };
-
-  const handleValidationErrors = (
-    validationResult: z.ZodSafeParseError<z.infer<typeof contactFormSchema>>
-  ) => {
-    setStatus("error");
-    const fieldErrors: FormErrors = {};
-    for (const error of validationResult.error.issues) {
-      if (error.path[0]) {
-        fieldErrors[error.path[0] as string] = error.message;
-      }
+  // Character count for vision field
+  useEffect(() => {
+    const textarea = visionRef.current;
+    if (textarea) {
+      setVisionLength(textarea.value.length);
     }
-    setErrors(fieldErrors);
-    setMessage("Please fix the errors below.");
-  };
+  }, []);
 
-  const handleSubmit = async (formData: FormData) => {
-    setStatus("loading");
-    setMessage("");
-    setErrors({});
+  const handleSubmit = (formData: FormData) => {
+    startTransition(async () => {
+      setStatus("loading");
+      setMessage("");
+      setErrors({});
 
-    const validationResult = validateFormData(formData);
+      const result = await submitContactForm(formData);
 
-    if (!validationResult.success) {
-      handleValidationErrors(validationResult);
-      return;
-    }
-
-    const data = validationResult.data;
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
+      if (result.success) {
         setStatus("success");
-        setMessage(
-          "Success! Your brief has been sent. I will review it and reply within 1 business day."
-        );
+        setMessage(result.message || "Success! Your brief has been sent.");
         // Clear form on success by resetting the form
         const form = document.getElementById("contact-form") as HTMLFormElement;
         if (form) {
@@ -113,17 +63,12 @@ export default function ContactForm() {
         }
       } else {
         setStatus("error");
-        setMessage(
-          responseData.error ||
-            "Oops! There was an issue sending your brief. Please try again or email directly."
-        );
+        setMessage(result.message || "An error occurred. Please try again.");
+        if (result.fieldErrors) {
+          setErrors(result.fieldErrors);
+        }
       }
-    } catch {
-      setStatus("error");
-      setMessage(
-        "A connection error occurred. Please check your network and try again."
-      );
-    }
+    });
   };
 
   return (
@@ -137,185 +82,197 @@ export default function ContactForm() {
           you with a personalized quote and timeline.
         </p>
 
-        <Form action={handleSubmit} className="space-y-6" id="contact-form">
-          {/* Status Message Display */}
-          {status === "loading" && (
-            <div className="rounded-lg bg-indigo-50 p-3 text-center font-medium text-indigo-700 text-sm">
-              Sending brief...
-            </div>
-          )}
-          {status === "success" && (
-            <div
-              className="rounded-lg border border-green-200 bg-green-100 p-4 text-green-700 text-sm"
-              role="alert"
-            >
-              <span className="font-bold">Message Sent!</span> {message}
-            </div>
-          )}
-          {status === "error" && (
-            <div
-              className="rounded-lg border border-red-200 bg-red-100 p-4 text-red-700 text-sm"
-              role="alert"
-            >
-              <span className="font-bold">Error:</span> {message}
-            </div>
-          )}
+        <Form
+          action={handleSubmit}
+          aria-busy={isPending}
+          className="space-y-6"
+          id="contact-form"
+        >
+          {/* Honeypot field - hidden from users but visible to bots */}
+          <input
+            aria-hidden="true"
+            autoComplete="off"
+            name="website"
+            style={{
+              position: "absolute",
+              left: "-9999px",
+              width: "1px",
+              height: "1px",
+              opacity: 0,
+            }}
+            tabIndex={-1}
+            type="text"
+          />
+
+          <StatusMessage
+            isPending={isPending}
+            message={message}
+            status={status}
+          />
 
           {/* Form Fields Grid */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* Name Field */}
-            <div>
-              <label
-                className="mb-1 flex items-center font-medium text-gray-700 text-sm"
-                htmlFor="name"
-              >
-                <User className="mr-2 text-indigo-500" size={16} />
-                Your Name
-              </label>
+            <FormField
+              error={errors.name}
+              htmlFor="name"
+              icon={<User className="mr-2 text-indigo-500" size={16} />}
+              label="Your Name"
+            >
               <input
+                aria-describedby={errors.name ? "name-error" : undefined}
+                aria-invalid={!!errors.name}
+                aria-required="true"
                 className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
                   errors.name
                     ? "border-red-300 focus:border-red-500"
                     : "border-gray-300 focus:border-indigo-500"
                 }`}
                 id="name"
+                maxLength={100}
                 name="name"
                 required
                 type="text"
               />
-              {errors.name && (
-                <p className="mt-1 text-red-600 text-sm">{errors.name}</p>
-              )}
-            </div>
+            </FormField>
 
-            {/* Email Field */}
-            <div>
-              <label
-                className="mb-1 flex items-center font-medium text-gray-700 text-sm"
-                htmlFor="email"
-              >
-                <Mail className="mr-2 text-indigo-500" size={16} />
-                Email Address
-              </label>
+            <FormField
+              error={errors.email}
+              htmlFor="email"
+              icon={<Mail className="mr-2 text-indigo-500" size={16} />}
+              label="Email Address"
+            >
               <input
+                aria-describedby={errors.email ? "email-error" : undefined}
+                aria-invalid={!!errors.email}
+                aria-required="true"
                 className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
                   errors.email
                     ? "border-red-300 focus:border-red-500"
                     : "border-gray-300 focus:border-indigo-500"
                 }`}
                 id="email"
+                maxLength={254}
                 name="email"
                 required
                 type="email"
               />
-              {errors.email && (
-                <p className="mt-1 text-red-600 text-sm">{errors.email}</p>
-              )}
-            </div>
+            </FormField>
 
-            {/* Project Type Dropdown */}
-            <div>
-              <label
-                className="mb-1 flex items-center font-medium text-gray-700 text-sm"
-                htmlFor="projectType"
-              >
-                <PenTool className="mr-2 text-indigo-500" size={16} />
-                Project Type
-              </label>
-              <select
-                className={`w-full rounded-lg border bg-white p-3 transition duration-150 focus:ring-indigo-500 ${
-                  errors.projectType
-                    ? "border-red-300 focus:border-red-500"
-                    : "border-gray-300 focus:border-indigo-500"
-                }`}
-                id="projectType"
-                name="projectType"
-              >
-                <option disabled value="">
-                  Select a Type
-                </option>
-                {PROJECT_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-              {errors.projectType && (
-                <p className="mt-1 text-red-600 text-sm">
-                  {errors.projectType}
-                </p>
-              )}
-            </div>
-
-            {/* Project Budget Dropdown (Lead Qualifying) */}
-            <div>
-              <label
-                className="mb-1 flex items-center font-medium text-gray-700 text-sm"
-                htmlFor="projectBudget"
-              >
-                <PoundSterling className="mr-2 text-indigo-500" size={16} />
-                Estimated Budget Range
-              </label>
-              <select
-                className={`w-full rounded-lg border bg-white p-3 transition duration-150 focus:ring-indigo-500 ${
-                  errors.projectBudget
-                    ? "border-red-300 focus:border-red-500"
-                    : "border-gray-300 focus:border-indigo-500"
-                }`}
-                id="projectBudget"
-                name="projectBudget"
-                required
-              >
-                <option disabled value="">
-                  Select a Budget
-                </option>
-                {BUDGET_RANGES.map((range) => (
-                  <option key={range} value={range}>
-                    {range}
-                  </option>
-                ))}
-              </select>
-              {errors.projectBudget && (
-                <p className="mt-1 text-red-600 text-sm">
-                  {errors.projectBudget}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Vision Text Area */}
-          <div>
-            <label
-              className="mb-1 flex items-center font-medium text-gray-700 text-sm"
-              htmlFor="vision"
+            <FormField
+              error={errors.projectType}
+              htmlFor="projectType"
+              icon={<PenTool className="mr-2 text-indigo-500" size={16} />}
+              label="Project Type"
             >
-              <MessageSquare className="mr-2 text-indigo-500" size={16} />
-              Tell me about your vision (Project brief)
-            </label>
-            <textarea
-              className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
-                errors.vision
-                  ? "border-red-300 focus:border-red-500"
-                  : "border-gray-300 focus:border-indigo-500"
-              }`}
-              id="vision"
-              name="vision"
-              placeholder="What is the goal of the video? Who is the audience? Do you have any deadlines or preferred locations in the Southwest?"
-              required
-              rows={5}
-            />
-            {errors.vision && (
-              <p className="mt-1 text-red-600 text-sm">{errors.vision}</p>
-            )}
+              <div className="relative">
+                <select
+                  aria-describedby={
+                    errors.projectType ? "projectType-error" : undefined
+                  }
+                  aria-invalid={!!errors.projectType}
+                  aria-required="true"
+                  className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 transition duration-150 focus:ring-indigo-500 ${
+                    errors.projectType
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-300 focus:border-indigo-500"
+                  }`}
+                  id="projectType"
+                  name="projectType"
+                >
+                  <option disabled value="">
+                    Select a Type
+                  </option>
+                  {PROJECT_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-gray-400" />
+              </div>
+            </FormField>
+
+            <FormField
+              error={errors.projectBudget}
+              htmlFor="projectBudget"
+              icon={
+                <PoundSterling className="mr-2 text-indigo-500" size={16} />
+              }
+              label="Estimated Budget Range"
+            >
+              <div className="relative">
+                <select
+                  aria-describedby={
+                    errors.projectBudget ? "projectBudget-error" : undefined
+                  }
+                  aria-invalid={!!errors.projectBudget}
+                  aria-required="true"
+                  className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 transition duration-150 focus:ring-indigo-500 ${
+                    errors.projectBudget
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-300 focus:border-indigo-500"
+                  }`}
+                  id="projectBudget"
+                  name="projectBudget"
+                  required
+                >
+                  <option disabled value="">
+                    Select a Budget
+                  </option>
+                  {BUDGET_RANGES.map((range) => (
+                    <option key={range} value={range}>
+                      {range}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-gray-400" />
+              </div>
+            </FormField>
           </div>
+
+          <FormField
+            error={errors.vision}
+            htmlFor="vision"
+            icon={<MessageSquare className="mr-2 text-indigo-500" size={16} />}
+            label="Tell me about your vision (Project brief)"
+          >
+            <div>
+              <textarea
+                aria-describedby={errors.vision ? "vision-error" : undefined}
+                aria-invalid={!!errors.vision}
+                aria-required="true"
+                className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
+                  errors.vision
+                    ? "border-red-300 focus:border-red-500"
+                    : "border-gray-300 focus:border-indigo-500"
+                }`}
+                id="vision"
+                maxLength={2000}
+                name="vision"
+                onChange={(e) => setVisionLength(e.target.value.length)}
+                placeholder="What is the goal of the video? Who is the audience? Do you have any deadlines or preferred locations in the Southwest?"
+                ref={visionRef}
+                required
+                rows={5}
+              />
+              <div
+                aria-live="polite"
+                className="mt-1 text-right text-gray-500 text-sm"
+              >
+                {visionLength}/2000 characters
+              </div>
+            </div>
+          </FormField>
 
           {/* Submit Button */}
           <button
             className="flex w-full justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-3 font-bold text-lg text-white shadow-lg transition duration-300 ease-in-out hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-            disabled={status === "loading"}
+            disabled={status === "loading" || isPending}
             type="submit"
           >
-            {status === "loading" ? "Sending..." : "SEND MY PROJECT BRIEF"}
+            {status === "loading" || isPending
+              ? "Sending..."
+              : "SEND MY PROJECT BRIEF"}
           </button>
         </Form>
       </div>

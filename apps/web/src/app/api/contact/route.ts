@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 // TypeScript types for form data and email options
 type ContactFormData = {
@@ -26,6 +27,10 @@ type EmailResponse = {
 // Constants
 const MOCK_DELAY_MS = 500;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const RATE_LIMIT = {
+  MAX_REQUESTS: 5,
+  WINDOW_MS: 60_000,
+} as const;
 
 /**
  * Mocks the Resend utility since a real API key cannot be used.
@@ -63,6 +68,33 @@ const resend = new ResendMock();
 
 export async function POST(request: NextRequest) {
   try {
+    // Check rate limiting
+    const ip =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const { rateLimited } = checkRateLimit(
+      ip,
+      RATE_LIMIT.MAX_REQUESTS,
+      RATE_LIMIT.WINDOW_MS
+    );
+
+    if (rateLimited) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a moment and try again." },
+        { status: 429 }
+      );
+    }
+
+    // Validate Content-Type
+    const contentType = request.headers.get("content-type");
+    if (!contentType?.includes("application/json")) {
+      return NextResponse.json(
+        { error: "Invalid content type. Expected application/json." },
+        { status: 400 }
+      );
+    }
+
     const data: ContactFormData = await request.json();
     const { name, email, projectType, projectBudget, vision } = data;
 
@@ -85,6 +117,21 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Construct Email Content (HTML for better formatting)
+    // Escape user input to prevent HTML injection
+    const escapeHtml = (text: string): string =>
+      text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeProjectType = escapeHtml(projectType || "Not Specified");
+    const safeProjectBudget = escapeHtml(projectBudget);
+    const safeVision = escapeHtml(vision);
+
     const emailHtml = `
 			<html>
 				<head>
@@ -104,25 +151,25 @@ export async function POST(request: NextRequest) {
 						<p>You have received a new project brief from your website contact form.</p>
 						
 						<div class="detail">
-							<strong>Name:</strong> ${name}
+							<strong>Name:</strong> ${safeName}
 						</div>
 						<div class="detail">
-							<strong>Email:</strong> <a href="mailto:${email}">${email}</a>
+							<strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a>
 						</div>
 						<div class="detail">
-							<strong>Project Type:</strong> ${projectType || "Not Specified"}
+							<strong>Project Type:</strong> ${safeProjectType}
 						</div>
 						<div class="detail">
-							<strong>Budget Range:</strong> ${projectBudget}
+							<strong>Budget Range:</strong> ${safeProjectBudget}
 						</div>
 						<div class="detail">
 							<strong>Vision/Brief:</strong>
-							<p style="white-space: pre-wrap; margin-top: 5px; padding: 10px; background: #f9f9f9; border-left: 3px solid #4f46e5;">${vision}</p>
+							<p style="white-space: pre-wrap; margin-top: 5px; padding: 10px; background: #f9f9f9; border-left: 3px solid #4f46e5;">${safeVision}</p>
 						</div>
 
 						<p style="text-align: center; margin-top: 30px;">
-							<a href="mailto:${email}" style="display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 5px;">
-								Reply to ${name} Now
+							<a href="mailto:${safeEmail}" style="display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 5px;">
+								Reply to ${safeName} Now
 							</a>
 						</p>
 					</div>
