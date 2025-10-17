@@ -32,10 +32,9 @@ type ContactFormData = {
 };
 
 type ContactFormResult = {
-  success: boolean;
-  message?: string;
-  errors?: Record<string, string>;
-  fieldErrors?: Record<string, string>;
+  status: "idle" | "loading" | "success" | "error";
+  message: string;
+  errors: Record<string, string>;
 };
 
 // Enhanced Zod schema with better validation messages using constants
@@ -170,7 +169,83 @@ function logFormSubmission(
   console.log("Contact form submission:", JSON.stringify(logData));
 }
 
+/**
+ * Makes the API call to submit the contact form
+ */
+async function submitToApi(data: ContactFormData): Promise<ContactFormResult> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    VALIDATION_LIMITS.REQUEST_TIMEOUT_MS
+  );
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"}/api/contact`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        signal: controller.signal,
+      }
+    );
+
+    clearTimeout(timeoutId);
+
+    const responseData = await response.json();
+
+    if (response.ok) {
+      logFormSubmission(data, true);
+      return {
+        status: "success",
+        message:
+          "Success! Your brief has been sent. I will review it and reply within 1 business day.",
+        errors: {},
+      };
+    }
+
+    // Handle specific HTTP error responses
+    let errorMessage =
+      "Oops! There was an issue sending your brief. Please try again.";
+
+    if (response.status === HTTP_STATUS.BAD_REQUEST) {
+      errorMessage =
+        responseData.error || "Please check your form data and try again.";
+    } else if (response.status === HTTP_STATUS.TOO_MANY_REQUESTS) {
+      errorMessage = "Too many requests. Please wait a moment and try again.";
+    } else if (response.status >= HTTP_STATUS.SERVER_ERROR_START) {
+      errorMessage =
+        "Our server is experiencing issues. Please try again later or contact us directly.";
+    }
+
+    logFormSubmission(data, false, `HTTP ${response.status}: ${errorMessage}`);
+
+    return {
+      status: "error",
+      message: errorMessage,
+      errors: {},
+    };
+  } catch (fetchError) {
+    clearTimeout(timeoutId);
+
+    if (fetchError instanceof Error && fetchError.name === "AbortError") {
+      logFormSubmission(data, false, "Request timeout");
+      return {
+        status: "error",
+        message:
+          "Request timed out. Please check your connection and try again.",
+        errors: {},
+      };
+    }
+
+    throw fetchError; // Re-throw to be caught by outer catch block
+  }
+}
+
 export async function submitContactForm(
+  _prevState: ContactFormResult,
   formData: FormData
 ): Promise<ContactFormResult> {
   try {
@@ -186,9 +261,9 @@ export async function submitContactForm(
       logFormSubmission(data, false, "Validation failed");
 
       return {
-        success: false,
+        status: "error",
         message: "Please correct the errors below and try again.",
-        fieldErrors,
+        errors: fieldErrors,
       };
     }
 
@@ -197,83 +272,16 @@ export async function submitContactForm(
     if (!timingValidation.isValid) {
       logFormSubmission(data, false, "Form submitted too quickly");
       return {
-        success: false,
-        message: timingValidation.message,
+        status: "error",
+        message:
+          timingValidation.message ||
+          "Form submitted too quickly. Please try again.",
+        errors: {},
       };
     }
 
-    // Make the API call with timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(
-      () => controller.abort(),
-      VALIDATION_LIMITS.REQUEST_TIMEOUT_MS
-    );
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"}/api/contact`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(validationResult.data),
-          signal: controller.signal,
-        }
-      );
-
-      clearTimeout(timeoutId);
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        logFormSubmission(data, true);
-
-        return {
-          success: true,
-          message:
-            "Success! Your brief has been sent. I will review it and reply within 1 business day.",
-        };
-      }
-
-      // Handle specific HTTP error responses
-      let errorMessage =
-        "Oops! There was an issue sending your brief. Please try again.";
-
-      if (response.status === HTTP_STATUS.BAD_REQUEST) {
-        errorMessage =
-          responseData.error || "Please check your form data and try again.";
-      } else if (response.status === HTTP_STATUS.TOO_MANY_REQUESTS) {
-        errorMessage = "Too many requests. Please wait a moment and try again.";
-      } else if (response.status >= HTTP_STATUS.SERVER_ERROR_START) {
-        errorMessage =
-          "Our server is experiencing issues. Please try again later or contact us directly.";
-      }
-
-      logFormSubmission(
-        data,
-        false,
-        `HTTP ${response.status}: ${errorMessage}`
-      );
-
-      return {
-        success: false,
-        message: errorMessage,
-      };
-    } catch (fetchError) {
-      clearTimeout(timeoutId);
-
-      if (fetchError instanceof Error && fetchError.name === "AbortError") {
-        logFormSubmission(data, false, "Request timeout");
-        return {
-          success: false,
-          message:
-            "Request timed out. Please check your connection and try again.",
-        };
-      }
-
-      throw fetchError; // Re-throw to be caught by outer catch block
-    }
+    // Make the API call
+    return await submitToApi(validationResult.data);
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred";
@@ -283,9 +291,10 @@ export async function submitContactForm(
     console.error("Contact form submission error:", errorMessage);
 
     return {
-      success: false,
+      status: "error",
       message:
         "A technical error occurred. Please try again or contact us directly if the problem persists.",
+      errors: {},
     };
   }
 }

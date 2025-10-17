@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
     const { name, email, projectType, projectBudget, vision, formTimestamp } =
       data;
 
-    // 1. Server-side Validation
+    // 1. Server-side Validation - Expected errors (return 400, don't throw)
     const hasRequiredFields =
       name && email && vision && projectBudget && projectType;
     if (!hasRequiredFields) {
@@ -204,8 +204,7 @@ export async function POST(request: NextRequest) {
       // Note: In production, replace with proper logging service
       // biome-ignore lint/suspicious/noConsole: Error logging for development
       console.error("Resend Error:", emailError);
-      // Log the error but send a generic success to the client to avoid giving away details
-      // Or, ideally, return a 500 status for critical failures
+      // This is an expected error from the email service - return 500 for critical failures
       return NextResponse.json(
         { error: "Failed to send email notification." },
         { status: 500 }
@@ -218,9 +217,12 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    // Note: In production, replace with proper logging service
+    // This catch block handles uncaught exceptions (unexpected errors)
+    // Log the error to an error reporting service in production
     // biome-ignore lint/suspicious/noConsole: Error logging for development
     console.error("API Route Error:", error);
+
+    // Return a generic error message to avoid exposing internal details
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

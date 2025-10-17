@@ -9,7 +9,7 @@ import {
   User,
 } from "lucide-react";
 import Form from "next/form";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { submitContactForm } from "@/lib/contact-actions";
 import { FormField } from "./form-field";
 import { StatusMessage } from "./status-message";
@@ -29,11 +29,23 @@ const BUDGET_RANGES = ["Under £500", "£500 - £2k", "£2k - £5k", "£5k+"];
 type FormStatus = "idle" | "loading" | "success" | "error";
 type FormErrors = Record<string, string>;
 
+type FormState = {
+  status: FormStatus;
+  message: string;
+  errors: FormErrors;
+};
+
+const initialState: FormState = {
+  status: "idle",
+  message: "",
+  errors: {},
+};
+
 export default function ContactForm() {
-  const [status, setStatus] = useState<FormStatus>("idle");
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isPending, startTransition] = useTransition();
+  const [state, formAction, isPending] = useActionState(
+    submitContactForm,
+    initialState
+  );
   const [visionLength, setVisionLength] = useState(0);
   const [formLoadTime] = useState(Date.now());
   const visionRef = useRef<HTMLTextAreaElement>(null);
@@ -46,31 +58,16 @@ export default function ContactForm() {
     }
   }, []);
 
-  const handleSubmit = (formData: FormData) => {
-    startTransition(async () => {
-      setStatus("loading");
-      setMessage("");
-      setErrors({});
-
-      const result = await submitContactForm(formData);
-
-      if (result.success) {
-        setStatus("success");
-        setMessage(result.message || "Success! Your brief has been sent.");
-        // Clear form on success by resetting the form
-        const form = document.getElementById("contact-form") as HTMLFormElement;
-        if (form) {
-          form.reset();
-        }
-      } else {
-        setStatus("error");
-        setMessage(result.message || "An error occurred. Please try again.");
-        if (result.fieldErrors) {
-          setErrors(result.fieldErrors);
-        }
+  // Handle form success - clear form when submission is successful
+  useEffect(() => {
+    if (state.status === "success") {
+      const form = document.getElementById("contact-form") as HTMLFormElement;
+      if (form) {
+        form.reset();
+        setVisionLength(0);
       }
-    });
-  };
+    }
+  }, [state.status]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 sm:p-8">
@@ -84,7 +81,7 @@ export default function ContactForm() {
         </p>
 
         <Form
-          action={handleSubmit}
+          action={formAction}
           aria-busy={isPending}
           className="space-y-6"
           id="contact-form"
@@ -110,24 +107,24 @@ export default function ContactForm() {
 
           <StatusMessage
             isPending={isPending}
-            message={message}
-            status={status}
+            message={state.message}
+            status={state.status}
           />
 
           {/* Form Fields Grid */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
-              error={errors.name}
+              error={state.errors.name}
               htmlFor="name"
               icon={<User className="mr-2 text-indigo-500" size={16} />}
               label="Your Name"
             >
               <input
-                aria-describedby={errors.name ? "name-error" : undefined}
-                aria-invalid={!!errors.name}
+                aria-describedby={state.errors.name ? "name-error" : undefined}
+                aria-invalid={!!state.errors.name}
                 aria-required="true"
                 className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
-                  errors.name
+                  state.errors.name
                     ? "border-red-300 focus:border-red-500"
                     : "border-gray-300 focus:border-indigo-500"
                 }`}
@@ -140,17 +137,19 @@ export default function ContactForm() {
             </FormField>
 
             <FormField
-              error={errors.email}
+              error={state.errors.email}
               htmlFor="email"
               icon={<Mail className="mr-2 text-indigo-500" size={16} />}
               label="Email Address"
             >
               <input
-                aria-describedby={errors.email ? "email-error" : undefined}
-                aria-invalid={!!errors.email}
+                aria-describedby={
+                  state.errors.email ? "email-error" : undefined
+                }
+                aria-invalid={!!state.errors.email}
                 aria-required="true"
                 className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
-                  errors.email
+                  state.errors.email
                     ? "border-red-300 focus:border-red-500"
                     : "border-gray-300 focus:border-indigo-500"
                 }`}
@@ -163,7 +162,7 @@ export default function ContactForm() {
             </FormField>
 
             <FormField
-              error={errors.projectType}
+              error={state.errors.projectType}
               htmlFor="projectType"
               icon={<PenTool className="mr-2 text-indigo-500" size={16} />}
               label="Project Type"
@@ -171,12 +170,12 @@ export default function ContactForm() {
               <div className="relative">
                 <select
                   aria-describedby={
-                    errors.projectType ? "projectType-error" : undefined
+                    state.errors.projectType ? "projectType-error" : undefined
                   }
-                  aria-invalid={!!errors.projectType}
+                  aria-invalid={!!state.errors.projectType}
                   aria-required="true"
                   className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 transition duration-150 focus:ring-indigo-500 ${
-                    errors.projectType
+                    state.errors.projectType
                       ? "border-red-300 focus:border-red-500"
                       : "border-gray-300 focus:border-indigo-500"
                   }`}
@@ -197,7 +196,7 @@ export default function ContactForm() {
             </FormField>
 
             <FormField
-              error={errors.projectBudget}
+              error={state.errors.projectBudget}
               htmlFor="projectBudget"
               icon={
                 <PoundSterling className="mr-2 text-indigo-500" size={16} />
@@ -207,12 +206,14 @@ export default function ContactForm() {
               <div className="relative">
                 <select
                   aria-describedby={
-                    errors.projectBudget ? "projectBudget-error" : undefined
+                    state.errors.projectBudget
+                      ? "projectBudget-error"
+                      : undefined
                   }
-                  aria-invalid={!!errors.projectBudget}
+                  aria-invalid={!!state.errors.projectBudget}
                   aria-required="true"
                   className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 transition duration-150 focus:ring-indigo-500 ${
-                    errors.projectBudget
+                    state.errors.projectBudget
                       ? "border-red-300 focus:border-red-500"
                       : "border-gray-300 focus:border-indigo-500"
                   }`}
@@ -235,18 +236,20 @@ export default function ContactForm() {
           </div>
 
           <FormField
-            error={errors.vision}
+            error={state.errors.vision}
             htmlFor="vision"
             icon={<MessageSquare className="mr-2 text-indigo-500" size={16} />}
             label="Tell me about your vision (Project brief)"
           >
             <div>
               <textarea
-                aria-describedby={errors.vision ? "vision-error" : undefined}
-                aria-invalid={!!errors.vision}
+                aria-describedby={
+                  state.errors.vision ? "vision-error" : undefined
+                }
+                aria-invalid={!!state.errors.vision}
                 aria-required="true"
                 className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
-                  errors.vision
+                  state.errors.vision
                     ? "border-red-300 focus:border-red-500"
                     : "border-gray-300 focus:border-indigo-500"
                 }`}
@@ -271,10 +274,10 @@ export default function ContactForm() {
           {/* Submit Button */}
           <button
             className="flex w-full justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-3 font-bold text-lg text-white shadow-lg transition duration-300 ease-in-out hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-            disabled={status === "loading" || isPending}
+            disabled={state.status === "loading" || isPending}
             type="submit"
           >
-            {status === "loading" || isPending
+            {state.status === "loading" || isPending
               ? "Sending..."
               : "SEND MY PROJECT BRIEF"}
           </button>
