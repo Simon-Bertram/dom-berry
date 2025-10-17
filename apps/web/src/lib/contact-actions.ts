@@ -9,15 +9,13 @@ const VALIDATION_LIMITS = {
   EMAIL_MAX_LENGTH: 254,
   VISION_MIN_LENGTH: 10,
   VISION_MAX_LENGTH: 2000,
-  REQUEST_TIMEOUT_MS: 10_000,
   MIN_FORM_SUBMISSION_TIME_MS: 2000,
 } as const;
 
-// HTTP status codes
-const HTTP_STATUS = {
-  BAD_REQUEST: 400,
-  TOO_MANY_REQUESTS: 429,
-  SERVER_ERROR_START: 500,
+// Email configuration
+const EMAIL_CONFIG = {
+  FROM: process.env.EMAIL_FROM || "Leads <onboarding@yourdomain.com>",
+  TO: process.env.EMAIL_TO || "your-professional-email@example.com",
 } as const;
 
 // Type definitions for better type safety
@@ -32,9 +30,9 @@ type ContactFormData = {
 };
 
 type ContactFormResult = {
-  status: "idle" | "loading" | "success" | "error";
-  message: string;
-  errors: Record<string, string>;
+  success: boolean;
+  message?: string;
+  fieldErrors?: Record<string, string>;
 };
 
 // Enhanced Zod schema with better validation messages using constants
@@ -170,82 +168,110 @@ function logFormSubmission(
 }
 
 /**
- * Makes the API call to submit the contact form
+ * Escapes HTML to prevent injection attacks
  */
-async function submitToApi(data: ContactFormData): Promise<ContactFormResult> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(
-    () => controller.abort(),
-    VALIDATION_LIMITS.REQUEST_TIMEOUT_MS
-  );
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
+/**
+ * Sends email directly via Resend API
+ */
+async function sendEmail(
+  data: ContactFormData
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"}/api/contact`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-        signal: controller.signal,
-      }
-    );
+    // Escape user input to prevent HTML injection
+    const safeName = escapeHtml(data.name);
+    const safeEmail = escapeHtml(data.email);
+    const safeProjectType = escapeHtml(data.projectType);
+    const safeProjectBudget = escapeHtml(data.projectBudget);
+    const safeVision = escapeHtml(data.vision);
 
-    clearTimeout(timeoutId);
+    const emailHtml = `
+      <html>
+        <head>
+          <style>
+            body { font-family: sans-serif; line-height: 1.6; color: #333; }
+            .container { padding: 20px; border: 1px solid #eee; border-radius: 8px; max-width: 600px; margin: 20px auto; }
+            .header { background-color: #4f46e5; color: white; padding: 15px; border-radius: 8px 8px 0 0; text-align: center; }
+            .detail { margin-bottom: 15px; padding: 10px; border-bottom: 1px dotted #ccc; }
+            .detail strong { display: inline-block; width: 150px; font-weight: 700; color: #1e40af; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h2>NEW LEAD: Southwest Videography Inquiry</h2>
+            </div>
+            <p>You have received a new project brief from your website contact form.</p>
+            
+            <div class="detail">
+              <strong>Name:</strong> ${safeName}
+            </div>
+            <div class="detail">
+              <strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a>
+            </div>
+            <div class="detail">
+              <strong>Project Type:</strong> ${safeProjectType}
+            </div>
+            <div class="detail">
+              <strong>Budget Range:</strong> ${safeProjectBudget}
+            </div>
+            <div class="detail">
+              <strong>Vision/Brief:</strong>
+              <p style="white-space: pre-wrap; margin-top: 5px; padding: 10px; background: #f9f9f9; border-left: 3px solid #4f46e5;">${safeVision}</p>
+            </div>
 
-    const responseData = await response.json();
+            <p style="text-align: center; margin-top: 30px;">
+              <a href="mailto:${safeEmail}" style="display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 5px;">
+                Reply to ${safeName} Now
+              </a>
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
 
-    if (response.ok) {
-      logFormSubmission(data, true);
+    // Use Resend API directly
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: EMAIL_CONFIG.FROM,
+        to: EMAIL_CONFIG.TO,
+        reply_to: data.email,
+        subject: `New Southwest Project Inquiry from ${data.name}`,
+        html: emailHtml,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
       return {
-        status: "success",
-        message:
-          "Success! Your brief has been sent. I will review it and reply within 1 business day.",
-        errors: {},
+        success: false,
+        error: `Resend API error: ${errorData.message || response.statusText}`,
       };
     }
 
-    // Handle specific HTTP error responses
-    let errorMessage =
-      "Oops! There was an issue sending your brief. Please try again.";
-
-    if (response.status === HTTP_STATUS.BAD_REQUEST) {
-      errorMessage =
-        responseData.error || "Please check your form data and try again.";
-    } else if (response.status === HTTP_STATUS.TOO_MANY_REQUESTS) {
-      errorMessage = "Too many requests. Please wait a moment and try again.";
-    } else if (response.status >= HTTP_STATUS.SERVER_ERROR_START) {
-      errorMessage =
-        "Our server is experiencing issues. Please try again later or contact us directly.";
-    }
-
-    logFormSubmission(data, false, `HTTP ${response.status}: ${errorMessage}`);
-
+    return { success: true };
+  } catch (error) {
     return {
-      status: "error",
-      message: errorMessage,
-      errors: {},
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown email error",
     };
-  } catch (fetchError) {
-    clearTimeout(timeoutId);
-
-    if (fetchError instanceof Error && fetchError.name === "AbortError") {
-      logFormSubmission(data, false, "Request timeout");
-      return {
-        status: "error",
-        message:
-          "Request timed out. Please check your connection and try again.",
-        errors: {},
-      };
-    }
-
-    throw fetchError; // Re-throw to be caught by outer catch block
   }
 }
 
 export async function submitContactForm(
-  _prevState: ContactFormResult,
   formData: FormData
 ): Promise<ContactFormResult> {
   try {
@@ -261,9 +287,9 @@ export async function submitContactForm(
       logFormSubmission(data, false, "Validation failed");
 
       return {
-        status: "error",
+        success: false,
         message: "Please correct the errors below and try again.",
-        errors: fieldErrors,
+        fieldErrors,
       };
     }
 
@@ -272,16 +298,28 @@ export async function submitContactForm(
     if (!timingValidation.isValid) {
       logFormSubmission(data, false, "Form submitted too quickly");
       return {
-        status: "error",
-        message:
-          timingValidation.message ||
-          "Form submitted too quickly. Please try again.",
-        errors: {},
+        success: false,
+        message: timingValidation.message,
       };
     }
 
-    // Make the API call
-    return await submitToApi(validationResult.data);
+    // Send email directly via Resend
+    const emailResult = await sendEmail(validationResult.data);
+
+    if (emailResult.success) {
+      logFormSubmission(data, true);
+      return {
+        success: true,
+        message:
+          "Success! Your brief has been sent. I will review it and reply within 1 business day.",
+      };
+    }
+
+    logFormSubmission(data, false, emailResult.error);
+    return {
+      success: false,
+      message: "Failed to send email. Please try again or contact us directly.",
+    };
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred";
@@ -291,10 +329,9 @@ export async function submitContactForm(
     console.error("Contact form submission error:", errorMessage);
 
     return {
-      status: "error",
+      success: false,
       message:
         "A technical error occurred. Please try again or contact us directly if the problem persists.",
-      errors: {},
     };
   }
 }
