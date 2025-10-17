@@ -7,16 +7,28 @@ import {
   PoundSterling,
   User,
 } from "lucide-react";
+import Form from "next/form";
 import { useState } from "react";
+import { z } from "zod";
 
-// Define the initial state for the form data
-const INITIAL_FORM_STATE = {
-  name: "",
-  email: "",
-  projectType: "",
-  projectBudget: "",
-  vision: "",
-};
+// Define the Zod schema for form validation
+const contactFormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  projectType: z.string().min(1, {
+    message: "Please select a project type.",
+  }),
+  projectBudget: z.string().min(1, {
+    message: "Please select a budget range.",
+  }),
+  vision: z.string().min(10, {
+    message: "Please provide at least 10 characters describing your vision.",
+  }),
+});
 
 // Define the options for the dropdowns
 const PROJECT_TYPES = [
@@ -30,27 +42,53 @@ const PROJECT_TYPES = [
 
 const BUDGET_RANGES = ["Under £500", "£500 - £2k", "£2k - £5k", "£5k+"];
 
-export default function ContactForm() {
-  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
-  const [status, setStatus] = useState(null); // 'idle', 'loading', 'success', 'error'
-  const [message, setMessage] = useState("");
+type FormStatus = "idle" | "loading" | "success" | "error";
+type FormErrors = Record<string, string>;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+export default function ContactForm() {
+  const [status, setStatus] = useState<FormStatus>("idle");
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const validateFormData = (formData: FormData) => {
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      projectType: formData.get("projectType") as string,
+      projectBudget: formData.get("projectBudget") as string,
+      vision: formData.get("vision") as string,
+    };
+
+    return contactFormSchema.safeParse(data);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleValidationErrors = (
+    validationResult: z.ZodSafeParseError<z.infer<typeof contactFormSchema>>
+  ) => {
+    setStatus("error");
+    const fieldErrors: FormErrors = {};
+    for (const error of validationResult.error.issues) {
+      if (error.path[0]) {
+        fieldErrors[error.path[0] as string] = error.message;
+      }
+    }
+    setErrors(fieldErrors);
+    setMessage("Please fix the errors below.");
+  };
+
+  const handleSubmit = async (formData: FormData) => {
     setStatus("loading");
     setMessage("");
+    setErrors({});
 
-    // Client-side basic validation
-    if (!(formData.name && formData.email && formData.vision)) {
-      setStatus("error");
-      setMessage("Please fill out all required fields.");
+    const validationResult = validateFormData(formData);
+
+    if (!validationResult.success) {
+      handleValidationErrors(validationResult);
       return;
     }
+
+    const data = validationResult.data;
 
     try {
       const response = await fetch("/api/contact", {
@@ -58,27 +96,29 @@ export default function ContactForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       });
 
-      const data = await response.json();
+      const responseData = await response.json();
 
       if (response.ok) {
         setStatus("success");
         setMessage(
           "Success! Your brief has been sent. I will review it and reply within 1 business day."
         );
-        setFormData(INITIAL_FORM_STATE); // Clear form on success
-        // In a real Next.js app, you might now redirect to the Thank You page: router.push('/thank-you')
+        // Clear form on success by resetting the form
+        const form = document.getElementById("contact-form") as HTMLFormElement;
+        if (form) {
+          form.reset();
+        }
       } else {
         setStatus("error");
         setMessage(
-          data.error ||
+          responseData.error ||
             "Oops! There was an issue sending your brief. Please try again or email directly."
         );
       }
-    } catch (error) {
-      console.error("Submission error:", error);
+    } catch {
       setStatus("error");
       setMessage(
         "A connection error occurred. Please check your network and try again."
@@ -97,7 +137,7 @@ export default function ContactForm() {
           you with a personalized quote and timeline.
         </p>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <Form action={handleSubmit} className="space-y-6" id="contact-form">
           {/* Status Message Display */}
           {status === "loading" && (
             <div className="rounded-lg bg-indigo-50 p-3 text-center font-medium text-indigo-700 text-sm">
@@ -133,14 +173,19 @@ export default function ContactForm() {
                 Your Name
               </label>
               <input
-                className="w-full rounded-lg border border-gray-300 p-3 transition duration-150 focus:border-indigo-500 focus:ring-indigo-500"
+                className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
+                  errors.name
+                    ? "border-red-300 focus:border-red-500"
+                    : "border-gray-300 focus:border-indigo-500"
+                }`}
                 id="name"
                 name="name"
-                onChange={handleChange}
                 required
                 type="text"
-                value={formData.name}
               />
+              {errors.name && (
+                <p className="mt-1 text-red-600 text-sm">{errors.name}</p>
+              )}
             </div>
 
             {/* Email Field */}
@@ -153,14 +198,19 @@ export default function ContactForm() {
                 Email Address
               </label>
               <input
-                className="w-full rounded-lg border border-gray-300 p-3 transition duration-150 focus:border-indigo-500 focus:ring-indigo-500"
+                className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
+                  errors.email
+                    ? "border-red-300 focus:border-red-500"
+                    : "border-gray-300 focus:border-indigo-500"
+                }`}
                 id="email"
                 name="email"
-                onChange={handleChange}
                 required
                 type="email"
-                value={formData.email}
               />
+              {errors.email && (
+                <p className="mt-1 text-red-600 text-sm">{errors.email}</p>
+              )}
             </div>
 
             {/* Project Type Dropdown */}
@@ -173,11 +223,13 @@ export default function ContactForm() {
                 Project Type
               </label>
               <select
-                className="w-full rounded-lg border border-gray-300 bg-white p-3 transition duration-150 focus:border-indigo-500 focus:ring-indigo-500"
+                className={`w-full rounded-lg border bg-white p-3 transition duration-150 focus:ring-indigo-500 ${
+                  errors.projectType
+                    ? "border-red-300 focus:border-red-500"
+                    : "border-gray-300 focus:border-indigo-500"
+                }`}
                 id="projectType"
                 name="projectType"
-                onChange={handleChange}
-                value={formData.projectType}
               >
                 <option disabled value="">
                   Select a Type
@@ -188,6 +240,11 @@ export default function ContactForm() {
                   </option>
                 ))}
               </select>
+              {errors.projectType && (
+                <p className="mt-1 text-red-600 text-sm">
+                  {errors.projectType}
+                </p>
+              )}
             </div>
 
             {/* Project Budget Dropdown (Lead Qualifying) */}
@@ -200,12 +257,14 @@ export default function ContactForm() {
                 Estimated Budget Range
               </label>
               <select
-                className="w-full rounded-lg border border-gray-300 bg-white p-3 transition duration-150 focus:border-indigo-500 focus:ring-indigo-500"
+                className={`w-full rounded-lg border bg-white p-3 transition duration-150 focus:ring-indigo-500 ${
+                  errors.projectBudget
+                    ? "border-red-300 focus:border-red-500"
+                    : "border-gray-300 focus:border-indigo-500"
+                }`}
                 id="projectBudget"
                 name="projectBudget"
-                onChange={handleChange}
                 required
-                value={formData.projectBudget}
               >
                 <option disabled value="">
                   Select a Budget
@@ -216,6 +275,11 @@ export default function ContactForm() {
                   </option>
                 ))}
               </select>
+              {errors.projectBudget && (
+                <p className="mt-1 text-red-600 text-sm">
+                  {errors.projectBudget}
+                </p>
+              )}
             </div>
           </div>
 
@@ -229,15 +293,20 @@ export default function ContactForm() {
               Tell me about your vision (Project brief)
             </label>
             <textarea
-              className="w-full rounded-lg border border-gray-300 p-3 transition duration-150 focus:border-indigo-500 focus:ring-indigo-500"
+              className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-indigo-500 ${
+                errors.vision
+                  ? "border-red-300 focus:border-red-500"
+                  : "border-gray-300 focus:border-indigo-500"
+              }`}
               id="vision"
               name="vision"
-              onChange={handleChange}
               placeholder="What is the goal of the video? Who is the audience? Do you have any deadlines or preferred locations in the Southwest?"
               required
-              rows="5"
-              value={formData.vision}
+              rows={5}
             />
+            {errors.vision && (
+              <p className="mt-1 text-red-600 text-sm">{errors.vision}</p>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -248,7 +317,7 @@ export default function ContactForm() {
           >
             {status === "loading" ? "Sending..." : "SEND MY PROJECT BRIEF"}
           </button>
-        </form>
+        </Form>
       </div>
     </div>
   );
