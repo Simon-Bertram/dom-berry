@@ -1,6 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
 import { z } from "zod";
+import { checkRateLimit, RATE_LIMIT } from "./rate-limit";
 
 // Constants for validation limits
 const VALIDATION_LIMITS = {
@@ -275,6 +277,30 @@ export async function submitContactForm(
   formData: FormData
 ): Promise<ContactFormResult> {
   try {
+    // Get client IP from headers for rate limiting
+    const headersList = await headers();
+    const forwardedFor = headersList.get("x-forwarded-for");
+    const realIp = headersList.get("x-real-ip");
+
+    // Extract IP (handle proxy chains)
+    const ip = forwardedFor
+      ? forwardedFor.split(",")[0].trim()
+      : realIp || "unknown";
+
+    // Apply rate limiting
+    const { rateLimited } = checkRateLimit(
+      ip === "unknown" ? "global-unknown" : ip,
+      ip === "unknown" ? RATE_LIMIT.UNKNOWN_IP_LIMIT : RATE_LIMIT.DEFAULT_LIMIT,
+      RATE_LIMIT.DEFAULT_WINDOW_MS
+    );
+
+    if (rateLimited) {
+      return {
+        success: false,
+        message: "Too many requests. Please wait a moment and try again.",
+      };
+    }
+
     // Extract and sanitize form data
     const data = extractAndSanitizeFormData(formData);
 
