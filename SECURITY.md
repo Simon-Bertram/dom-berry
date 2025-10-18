@@ -6,34 +6,50 @@ This document outlines the security improvements implemented in the contact form
 
 ## Security Features Implemented
 
-### 1. Rate Limiting
+### 1. Rate Limiting ✅ IMPLEMENTED
 
-**Implementation**: In-memory rate limiter (`/src/lib/rate-limit.ts`)
+**Implementation**: In-memory rate limiter (`/src/lib/rate-limit.ts`) with IP-based tracking
 
 ```typescript
-// 5 requests per minute per IP address
+// IP extraction and rate limiting in submitContactForm()
+const headersList = await headers();
+const forwardedFor = headersList.get("x-forwarded-for");
+const realIp = headersList.get("x-real-ip");
+
+const ip = forwardedFor
+  ? forwardedFor.split(",")[0].trim()
+  : realIp || "unknown";
+
 const { rateLimited } = checkRateLimit(
-  ip,
-  RATE_LIMIT.MAX_REQUESTS,
-  RATE_LIMIT.WINDOW_MS
+  ip === "unknown" ? "global-unknown" : ip,
+  ip === "unknown" ? RATE_LIMIT.UNKNOWN_IP_LIMIT : RATE_LIMIT.DEFAULT_LIMIT,
+  RATE_LIMIT.DEFAULT_WINDOW_MS
 );
 ```
 
 **Protection Against**:
 
-- Brute force attacks
-- Spam submissions
+- Automated spam bots
 - DoS attacks
+- Form abuse and enumeration
 - API abuse
 
 **Configuration**:
 
-- **Limit**: 5 requests per minute
+- **Known IPs**: 5 requests per minute per IP address
+- **Unknown IPs**: 10 requests per minute (global fallback)
 - **Window**: 60 seconds
-- **Scope**: Per IP address
-- **Storage**: In-memory (suitable for single-server deployments)
+- **Storage**: In-memory with automatic cleanup
+- **Scope**: Per IP address + global fallback
 
-**Response**: Returns HTTP 429 with message "Too many requests. Please wait a moment and try again."
+**Features**:
+
+- Automatic cleanup of expired entries (prevents memory leaks)
+- Handles proxy chains via `x-forwarded-for` header
+- Different limits for known vs unknown IPs
+- Counts all attempts (including validation failures)
+
+**Response**: Returns form error with message "Too many requests. Please wait a moment and try again."
 
 ### 2. Honeypot Spam Protection
 
@@ -255,6 +271,34 @@ return {
 - System fingerprinting
 - Attack surface enumeration
 
+## Recent Security Updates
+
+### Rate Limiting Implementation (Latest)
+
+**Status**: ✅ **ACTIVELY IMPLEMENTED** - Previously documented but not actually integrated
+
+**What was fixed**:
+
+- Rate limiting was documented in SECURITY.md but never actually called in the code
+- Contact form had NO rate limiting protection despite having the utility
+
+**Implementation details**:
+
+- Added IP extraction from Next.js headers (`x-forwarded-for`, `x-real-ip`)
+- Integrated rate limiting check at the beginning of `submitContactForm()`
+- Enhanced rate limiter with automatic cleanup and global fallback support
+- Applied different limits: 5 req/min for known IPs, 10 req/min for unknown IPs
+
+**Files modified**:
+
+- `apps/web/src/lib/rate-limit.ts` - Enhanced with cleanup and constants
+- `apps/web/src/lib/contact-actions.ts` - Integrated IP extraction and rate limiting
+
+**Security impact**:
+
+- **Before**: Unlimited spam submissions possible
+- **After**: Protected against automated abuse with 3-layer defense (rate limiting + honeypot + timestamp validation)
+
 ## Security Considerations
 
 ### What We Removed
@@ -267,7 +311,7 @@ return {
 
 ### Rate Limiting Architecture Decision
 
-**Chosen**: In-memory rate limiter
+**Chosen**: Enhanced in-memory rate limiter with automatic cleanup
 **Alternative**: `@upstash/ratelimit` with Redis
 **Alternative**: Vercel Edge Config/KV
 
@@ -276,8 +320,11 @@ return {
 - ✅ No external dependencies
 - ✅ Works immediately in development
 - ✅ Suitable for single-server deployments
-- ✅ ~20 lines of code
+- ✅ Automatic memory cleanup prevents leaks
+- ✅ Handles proxy chains and unknown IPs
+- ✅ Different limits for known vs unknown IPs
 - ❌ Doesn't work across multiple servers
+- ❌ Resets on serverless cold starts (acceptable trade-off)
 
 ### Honeypot vs CAPTCHA
 
@@ -330,24 +377,32 @@ function logFormSubmission(
 
 ### Rate Limiting Monitoring
 
-The rate limiter tracks:
+The enhanced rate limiter now tracks:
 
-- IP addresses making requests
-- Request counts per time window
-- Rate limit violations
+- IP addresses making requests (with proxy chain handling)
+- Request counts per time window (per IP + global fallback)
+- Rate limit violations with automatic cleanup
+- Unknown IP handling with stricter global limits
 
-**Note**: In production, consider integrating with a proper logging service like Sentry, LogRocket, or DataDog.
+**Current implementation**:
+
+- In-memory storage with automatic cleanup every 5 minutes
+- Tracks both individual IPs and global "unknown" IP submissions
+- Handles Vercel's proxy headers (`x-forwarded-for`, `x-real-ip`)
+
+**Note**: In production, consider integrating with a proper logging service like Sentry, LogRocket, or DataDog for persistent rate limit monitoring.
 
 ## Security Best Practices Implemented
 
 1. **Input Validation**: All user input validated with strict schemas
 2. **Output Encoding**: HTML content properly escaped
-3. **Rate Limiting**: Prevents abuse and DoS attacks
+3. **Rate Limiting**: ✅ **ACTIVE** - IP-based rate limiting prevents abuse and DoS attacks
 4. **Error Handling**: Generic error messages prevent information disclosure
 5. **Request Validation**: Content-type and structure validation
 6. **Timeout Protection**: Prevents resource exhaustion
 7. **Spam Protection**: Honeypot field catches automated submissions
 8. **Bot Detection**: Timestamp-based validation prevents instant form submissions
+9. **IP Tracking**: Handles proxy chains and unknown IPs with appropriate limits
 
 ## Future Security Enhancements
 

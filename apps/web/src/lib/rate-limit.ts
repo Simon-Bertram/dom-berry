@@ -27,8 +27,8 @@ function cleanupExpiredEntries() {
 
 export function checkRateLimit(
   identifier: string,
-  limit = RATE_LIMIT.DEFAULT_LIMIT,
-  windowMs = RATE_LIMIT.DEFAULT_WINDOW_MS
+  limit: number = RATE_LIMIT.DEFAULT_LIMIT,
+  windowMs: number = RATE_LIMIT.DEFAULT_WINDOW_MS
 ): { rateLimited: boolean; remaining: number } {
   // Cleanup expired entries periodically
   cleanupExpiredEntries();
