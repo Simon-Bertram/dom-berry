@@ -28,13 +28,13 @@ export default function Hero({
   return (
     <section
       aria-label="Hero video section"
-      className={`relative h-screen w-full overflow-hidden ${className}`}
+      className={`hero-section relative h-[100vh] w-full overflow-hidden ${className}`}
     >
       {/* Video Element - Always present to prevent CLS */}
       <video
         aria-label="Hero background video"
         autoPlay
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute top-0 right-0 left-0 h-full w-full object-cover"
         loop
         muted
         onError={handleVideoError}
@@ -55,7 +55,7 @@ export default function Hero({
       {/* Poster Image Fallback - Always present to prevent CLS */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full bg-center bg-cover bg-no-repeat"
+        className="absolute top-0 right-0 left-0 h-full w-full bg-center bg-cover bg-no-repeat"
         style={{
           backgroundImage: `url(${posterUrl})`,
           opacity: isVideoLoaded && !hasError ? 0 : 1,
@@ -65,7 +65,7 @@ export default function Hero({
 
       {/* Overlay Content */}
       {overlayContent && (
-        <div className="relative z-10 flex h-full w-full items-center justify-center">
+        <div className="relative z-10 flex h-full w-full items-center justify-center pt-[72px]">
           <div className="mx-auto max-w-7xl px-4 text-center text-white">
             {overlayContent}
           </div>

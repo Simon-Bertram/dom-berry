@@ -15,7 +15,7 @@ export default function AboutPage() {
         </header>
 
         {/* Main Content */}
-        <main className="space-y-12">
+        <div className="space-y-12">
           {/* About Section */}
           <section className="rounded-xl bg-white p-8 shadow-lg dark:bg-gray-800">
             <h2 className="mb-6 font-bold font-display text-2xl text-gray-900 dark:text-white">
@@ -107,7 +107,7 @@ export default function AboutPage() {
               </Link>
             </div>
           </section>
-        </main>
+        </div>
       </div>
     </div>
   );

@@ -36,11 +36,9 @@ export default function RootLayout({
         className={`${playfairDisplay.variable} ${sourceSansPro.variable} antialiased`}
       >
         <Providers>
-          <div className="grid h-svh grid-rows-[auto_1fr_auto]">
-            <Header />
-            <main>{children}</main>
-            <Footer />
-          </div>
+          <Header />
+          <main>{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>
