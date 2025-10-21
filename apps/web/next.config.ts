@@ -11,7 +11,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "res.cloudinary.com",
+        port: "", // Leave as empty string for standard HTTPS port (443)
+        pathname: "/dulwhlyqt/**", // Crucial: This should be specific to your Cloudinary cloud name
       },
     ],
   },
@@ -20,8 +22,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Enable static optimization
   trailingSlash: false,
-  // Optimize bundle
-  swcMinify: true,
 };
 
 export default nextConfig;

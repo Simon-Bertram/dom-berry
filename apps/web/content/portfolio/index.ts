@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import matter from "gray-matter";
 import { join } from "path";
 
-export interface PortfolioProject {
+export type PortfolioProject {
   title: string;
   client: string;
   category: string;
@@ -20,12 +20,13 @@ export interface PortfolioProject {
 }
 
 const portfolioDirectory = join(process.cwd(), "content/portfolio");
+const mdxExtensionRegex = /\.mdx$/;
 
 export function getAllPortfolioProjects(): PortfolioProject[] {
   const fileNames = ["project-1.mdx", "project-2.mdx"];
 
   const allProjects = fileNames.map((fileName) => {
-    const slug = fileName.replace(/\.mdx$/, "");
+    const slug = fileName.replace(mdxExtensionRegex, "");
     const fullPath = join(portfolioDirectory, fileName);
     const fileContents = readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
@@ -39,9 +40,13 @@ export function getAllPortfolioProjects(): PortfolioProject[] {
 
   // Sort by featured first, then by year (newest first)
   return allProjects.sort((a, b) => {
-    if (a.featured && !b.featured) return -1;
-    if (!a.featured && b.featured) return 1;
-    return Number.parseInt(b.year) - Number.parseInt(a.year);
+    if (a.featured && !b.featured) {
+      return -1;
+    }
+    if (!a.featured && b.featured) {
+      return 1;
+    }
+    return Number.parseInt(b.year, 10) - Number.parseInt(a.year, 10);
   });
 }
 

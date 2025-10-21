@@ -14,9 +14,7 @@ export default function Header() {
         <NavItems className="hidden items-center gap-6 md:flex" />
         <div className="flex items-center gap-2">
           <Button asChild className="hidden md:inline-flex">
-            <Link as={"/contact" as any} href="/contact">
-              Start your project
-            </Link>
+            <Link href="/contact">Start your project</Link>
           </Button>
           <ModeToggle />
           <MobileMenu />

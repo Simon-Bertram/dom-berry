@@ -1,4 +1,14 @@
-export const SERVICES = [
+export type Service = {
+  id: string;
+  title: string;
+  description: string;
+  features: string[];
+  startingPrice: string;
+  duration: string;
+  deliverables: string[];
+};
+
+export const SERVICES: Service[] = [
   {
     id: "corporate-film",
     title: "Corporate Film",
@@ -97,5 +107,3 @@ export const SERVICES = [
     ],
   },
 ] as const;
-
-export type Service = (typeof SERVICES)[number];
