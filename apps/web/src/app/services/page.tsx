@@ -19,28 +19,34 @@ export default function ServicesPage() {
             cinematic quality.
           </p>
         </div>
+      </div>
 
-        {/* Services Grid */}
-        <div className="relative">
-          {/* Background image */}
-          <div className="-z-20 absolute inset-0">
-            <Image
-              alt="Services Background"
-              className="object-cover"
-              fill
-              priority
-              src="/patrick-tomasso-5hvn-2WW6rY-unsplash.jpg"
-            />
-            {/* Overlay for better text readability */}
-            <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/40" />
-          </div>
-          <ServicesGrid services={SERVICES} />
+      {/* Services Grid Section - Full Width */}
+      <section className="relative mb-12 w-full">
+        {/* Full-width background image */}
+        <div className="absolute inset-0">
+          <Image
+            alt="Services Background"
+            className="object-cover"
+            fill
+            priority
+            src="/patrick-tomasso-5hvn-2WW6rY-unsplash.jpg"
+          />
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/40" />
         </div>
 
+        {/* Content container */}
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <ServicesGrid services={SERVICES} />
+        </div>
+      </section>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ProcessSection />
 
         {/* Call to Action */}
-        <div className="rounded-xl bg-indigo-600 p-12 text-center text-white dark:bg-indigo-700">
+        <section className="rounded-xl bg-indigo-600 p-12 text-center text-white dark:bg-indigo-700">
           <h2 className="mb-4 font-bold text-3xl">
             Ready to Start Your Project?
           </h2>
@@ -53,7 +59,7 @@ export default function ServicesPage() {
           >
             Get Your Quote
           </Link>
-        </div>
+        </section>
       </div>
     </div>
   );

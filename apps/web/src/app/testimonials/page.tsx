@@ -8,14 +8,14 @@ export default function TestimonialsPage() {
   const testimonials = getAllTestimonials();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-12 dark:bg-gray-900">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
-          <h1 className="mb-4 font-bold text-4xl text-gray-900">
+          <h1 className="mb-4 font-bold text-4xl text-gray-900 dark:text-gray-100">
             Client Testimonials
           </h1>
-          <p className="mx-auto max-w-3xl text-gray-600 text-xl">
+          <p className="mx-auto max-w-3xl text-gray-600 text-xl dark:text-gray-300">
             Don't just take our word for it. Here's what our clients say about
             working with us.
           </p>
@@ -41,13 +41,13 @@ export default function TestimonialsPage() {
                   {new Array(testimonial.rating).fill(null).map((_, i) => (
                     <Star
                       className="h-5 w-5 fill-current text-yellow-400"
-                      key={`star-${i}`}
+                      key={`${testimonial.slug}-star-${i}`}
                     />
                   ))}
                 </div>
 
                 {/* Testimonial Content */}
-                <blockquote className="mb-6 text-center text-gray-700 italic">
+                <blockquote className="mb-6 text-center text-gray-700 italic dark:text-gray-300">
                   "{testimonial.content.split("\n")[0]}"
                 </blockquote>
 
@@ -65,24 +65,26 @@ export default function TestimonialsPage() {
                     </div>
                   </div>
 
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                     {testimonial.name}
                   </h3>
-                  <p className="text-gray-600 text-sm">{testimonial.role}</p>
-                  <p className="font-medium text-indigo-600 text-sm">
+                  <p className="text-gray-600 text-sm dark:text-gray-400">
+                    {testimonial.role}
+                  </p>
+                  <p className="font-medium text-indigo-600 text-sm dark:text-indigo-400">
                     {testimonial.company}
                   </p>
 
                   {testimonial.featured && (
-                    <Badge className="mt-2 bg-indigo-600">
+                    <Badge className="mt-2 bg-indigo-600 dark:bg-indigo-500">
                       Featured Client
                     </Badge>
                   )}
                 </div>
 
                 {/* Project Info */}
-                <div className="mt-4 border-gray-200 border-t pt-4">
-                  <p className="text-center text-gray-500 text-xs">
+                <div className="mt-4 border-gray-200 border-t pt-4 dark:border-gray-700">
+                  <p className="text-center text-gray-500 text-xs dark:text-gray-300">
                     Project: {testimonial.project}
                   </p>
                 </div>
@@ -92,46 +94,58 @@ export default function TestimonialsPage() {
         </div>
 
         {/* Stats Section */}
-        <div className="mb-16 rounded-xl bg-white p-8">
-          <h2 className="mb-8 text-center font-bold text-3xl text-gray-900">
+        <div className="mb-16 rounded-xl bg-white p-8 dark:bg-gray-800">
+          <h2 className="mb-8 text-center font-bold text-3xl text-gray-900 dark:text-gray-100">
             Our Track Record
           </h2>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
             <div className="text-center">
-              <div className="mb-2 font-bold text-4xl text-indigo-600">50+</div>
-              <p className="text-gray-600">Projects Completed</p>
+              <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
+                50+
+              </div>
+              <p className="text-gray-600 dark:text-gray-300">
+                Projects Completed
+              </p>
             </div>
 
             <div className="text-center">
-              <div className="mb-2 font-bold text-4xl text-indigo-600">
+              <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
                 100%
               </div>
-              <p className="text-gray-600">Client Satisfaction</p>
+              <p className="text-gray-600 dark:text-gray-300">
+                Client Satisfaction
+              </p>
             </div>
 
             <div className="text-center">
-              <div className="mb-2 font-bold text-4xl text-indigo-600">5.0</div>
-              <p className="text-gray-600">Average Rating</p>
+              <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
+                5.0
+              </div>
+              <p className="text-gray-600 dark:text-gray-300">Average Rating</p>
             </div>
 
             <div className="text-center">
-              <div className="mb-2 font-bold text-4xl text-indigo-600">3</div>
-              <p className="text-gray-600">Years Experience</p>
+              <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
+                3
+              </div>
+              <p className="text-gray-600 dark:text-gray-300">
+                Years Experience
+              </p>
             </div>
           </div>
         </div>
 
         {/* Call to Action */}
         <div className="text-center">
-          <h2 className="mb-4 font-bold text-3xl text-gray-900">
+          <h2 className="mb-4 font-bold text-3xl text-gray-900 dark:text-gray-100">
             Ready to Join Our Happy Clients?
           </h2>
-          <p className="mb-8 text-gray-600 text-xl">
+          <p className="mb-8 text-gray-600 text-xl dark:text-gray-300">
             Let's create something amazing together.
           </p>
           <a
-            className="inline-flex items-center rounded-lg bg-indigo-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-indigo-700"
+            className="inline-flex items-center rounded-lg bg-indigo-600 px-8 py-4 font-semibold text-white transition-colors hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
             href="/contact"
           >
             Start Your Project

@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Service } from "../../../content/services/services";
+import type { Service } from "../../content/services/services";
 
 type ServicesGridProps = {
   services: Service[];

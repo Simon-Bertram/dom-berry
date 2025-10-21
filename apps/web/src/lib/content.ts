@@ -34,15 +34,19 @@ export type Testimonial = {
 };
 
 const contentDirectory = join(process.cwd(), "content");
+const mdxRegex = /\.mdx$/;
 
 /**
  * Get all portfolio projects
  */
 export function getAllPortfolioProjects(): PortfolioProject[] {
   const portfolioDirectory = join(contentDirectory, "portfolio");
-  const fileNames = ["project-1.mdx", "project-2.mdx"];
-
-  const mdxRegex = /\.mdx$/;
+  const fileNames = [
+    "project-1.mdx",
+    "project-2.mdx",
+    "project-3.mdx",
+    "project-4.mdx",
+  ];
 
   const allProjects = fileNames.map((fileName) => {
     const slug = fileName.replace(mdxRegex, "");
@@ -103,8 +107,6 @@ export function getPortfolioProjectsByCategory(
 export function getAllTestimonials(): Testimonial[] {
   const testimonialsDirectory = join(contentDirectory, "testimonials");
   const fileNames = ["testimonial-1.mdx", "testimonial-2.mdx"];
-
-  const mdxRegex = /\.mdx$/;
 
   const allTestimonials = fileNames.map((fileName) => {
     const slug = fileName.replace(mdxRegex, "");

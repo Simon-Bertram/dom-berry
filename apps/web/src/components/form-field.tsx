@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 type FormFieldProps = {
   label: string;
   icon: ReactNode;
-  error?: string;
+  error?: string | undefined;
   children: ReactNode;
-  htmlFor?: string;
+  htmlFor?: string | undefined;
 };
 
 export function FormField({

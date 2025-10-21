@@ -27,8 +27,8 @@ type ContactFormData = {
   projectType: string;
   projectBudget: string;
   vision: string;
-  website?: string; // Honeypot field
-  formTimestamp?: string; // Timestamp for bot detection
+  website?: string | undefined; // Honeypot field
+  formTimestamp?: string | undefined; // Timestamp for bot detection
 };
 
 type FormStatus = "idle" | "loading" | "success" | "error";
@@ -118,7 +118,9 @@ function extractAndSanitizeFormData(formData: FormData): ContactFormData {
 /**
  * Formats validation errors for better accessibility
  */
-function formatValidationErrors(issues: z.ZodIssue[]): Record<string, string> {
+function formatValidationErrors(
+  issues: z.ZodError["issues"]
+): Record<string, string> {
   const errors: Record<string, string> = {};
 
   for (const issue of issues) {
@@ -208,8 +210,8 @@ export async function submitContactForm(
 
     // Extract IP (handle proxy chains)
     const ip = forwardedFor
-      ? forwardedFor.split(",")[0].trim()
-      : realIp || "unknown";
+      ? (forwardedFor.split(",")[0]?.trim() ?? "unknown")
+      : (realIp ?? "unknown");
 
     // Apply rate limiting
     const rateLimit =
