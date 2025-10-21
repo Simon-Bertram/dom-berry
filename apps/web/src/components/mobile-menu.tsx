@@ -29,11 +29,11 @@ export function MobileMenu() {
           aria-controls="mobile-navigation"
           aria-expanded={isMobileMenuOpen}
           aria-label="Open navigation menu"
-          className="lg:hidden"
+          className="p-6 lg:hidden"
           size="icon"
           variant="ghost"
         >
-          <Menu className="h-6 w-6" />
+          <Menu className="size-6" />
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>

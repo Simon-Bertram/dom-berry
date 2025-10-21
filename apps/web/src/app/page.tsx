@@ -19,7 +19,7 @@ export default function Home() {
               className="rounded-lg bg-white px-8 py-3 font-semibold text-black text-lg transition-colors hover:bg-white/90"
               type="button"
             >
-              View Portfolio
+              <Link href="/portfolio">View Portfolio</Link>
             </button>
             <Link
               className="rounded-lg border-2 border-white px-8 py-3 font-semibold text-lg text-white transition-colors hover:bg-white hover:text-black"
