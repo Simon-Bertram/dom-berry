@@ -76,68 +76,83 @@ export default function PortfolioGrid({
 
       {/* Projects Grid */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map((project) => (
-          <Card
-            className="fade-in-0 animate-in overflow-hidden transition-all duration-300 hover:shadow-lg"
-            key={project.slug}
-          >
-            <div className="relative h-48 w-full">
-              <Image
-                alt={`${project.title} project showcase`}
-                className="object-cover"
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                src={project.image}
-              />
-              {project.featured && (
-                <Badge className="absolute top-2 right-2 bg-indigo-600 text-white dark:bg-indigo-500 dark:text-white">
-                  Featured
-                </Badge>
-              )}
-            </div>
-
-            <CardHeader>
-              <CardTitle className="text-xl">{project.title}</CardTitle>
-              <CardDescription>
-                {project.client} • {project.year}
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <p className="mb-4 line-clamp-3 text-gray-600 dark:text-gray-300">
-                {project.description}
-              </p>
-
-              <div className="mb-4 flex flex-wrap gap-2">
-                <Badge variant="secondary">{project.category}</Badge>
-                <Badge variant="outline">{project.location}</Badge>
+        {filteredProjects.length === 0
+          ? // Skeleton loading state to prevent CLS
+            Array.from({ length: 6 }, (_, index) => (
+              <div
+                className="animate-pulse rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
+                key={`skeleton-${index}-${Date.now()}`}
+              >
+                <div className="mb-4 h-48 w-full rounded-lg bg-gray-200 dark:bg-gray-700" />
+                <div className="mb-2 h-6 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
+                <div className="mb-4 h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-700" />
+                <div className="mb-2 h-4 w-full rounded bg-gray-200 dark:bg-gray-700" />
+                <div className="mb-2 h-4 w-5/6 rounded bg-gray-200 dark:bg-gray-700" />
+                <div className="h-4 w-2/3 rounded bg-gray-200 dark:bg-gray-700" />
               </div>
-
-              <div className="mb-4 flex items-center justify-between text-gray-500 text-sm dark:text-gray-400">
-                <span>Duration: {project.duration}</span>
-                <span>Budget: {project.budget}</span>
-              </div>
-
-              <div className="inline-flex items-center font-medium text-indigo-600 dark:text-indigo-400">
-                View Project Details
-                <svg
-                  className="ml-1 h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <title>Arrow right</title>
-                  <path
-                    d="M9 5l7 7-7 7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
+            ))
+          : filteredProjects.map((project) => (
+              <Card
+                className="fade-in-0 animate-in overflow-hidden transition-all duration-300 hover:shadow-lg"
+                key={project.slug}
+              >
+                <div className="relative h-48 w-full">
+                  <Image
+                    alt={`${project.title} project showcase`}
+                    className="object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    src={project.image}
                   />
-                </svg>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  {project.featured && (
+                    <Badge className="absolute top-2 right-2 bg-indigo-600 text-white dark:bg-indigo-500 dark:text-white">
+                      Featured
+                    </Badge>
+                  )}
+                </div>
+
+                <CardHeader>
+                  <CardTitle className="text-xl">{project.title}</CardTitle>
+                  <CardDescription>
+                    {project.client} • {project.year}
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent>
+                  <p className="mb-4 line-clamp-3 text-gray-600 dark:text-gray-300">
+                    {project.description}
+                  </p>
+
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    <Badge variant="secondary">{project.category}</Badge>
+                    <Badge variant="outline">{project.location}</Badge>
+                  </div>
+
+                  <div className="mb-4 flex items-center justify-between text-gray-500 text-sm dark:text-gray-400">
+                    <span>Duration: {project.duration}</span>
+                    <span>Budget: {project.budget}</span>
+                  </div>
+
+                  <div className="inline-flex items-center font-medium text-indigo-600 dark:text-indigo-400">
+                    View Project Details
+                    <svg
+                      className="ml-1 h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <title>Arrow right</title>
+                      <path
+                        d="M9 5l7 7-7 7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                      />
+                    </svg>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
       </div>
     </>
   );

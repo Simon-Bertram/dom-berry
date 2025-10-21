@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: "standalone", // Smaller Docker images for deployment
   experimental: {
     optimizePackageImports: ["lucide-react"], // Reduce bundle size
+    optimizeCss: true, // Optimize CSS including font loading
   },
   images: {
     formats: ["image/avif", "image/webp"], // Smaller images

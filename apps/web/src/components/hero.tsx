@@ -30,13 +30,11 @@ export default function Hero({
       aria-label="Hero video section"
       className={`relative h-screen w-full overflow-hidden ${className}`}
     >
-      {/* Video Element */}
+      {/* Video Element - Always present to prevent CLS */}
       <video
         aria-label="Hero background video"
         autoPlay
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-          isVideoLoaded && !hasError ? "opacity-100" : "opacity-0"
-        }`}
+        className="absolute inset-0 h-full w-full object-cover"
         loop
         muted
         onError={handleVideoError}
@@ -44,19 +42,25 @@ export default function Hero({
         playsInline
         poster={posterUrl}
         preload="auto"
+        style={{
+          opacity: isVideoLoaded && !hasError ? 1 : 0,
+          transition: "opacity 0.5s ease-in-out",
+        }}
       >
         <source media="(max-width: 768px)" src={mobileVideoUrl} />
         <source src={desktopVideoUrl} />
         Your browser does not support the video tag.
       </video>
 
-      {/* Poster Image Fallback */}
+      {/* Poster Image Fallback - Always present to prevent CLS */}
       <div
         aria-hidden="true"
-        className={`absolute inset-0 h-full w-full bg-center bg-cover bg-no-repeat transition-opacity duration-500 ${
-          isVideoLoaded && !hasError ? "opacity-0" : "opacity-100"
-        }`}
-        style={{ backgroundImage: `url(${posterUrl})` }}
+        className="absolute inset-0 h-full w-full bg-center bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: `url(${posterUrl})`,
+          opacity: isVideoLoaded && !hasError ? 0 : 1,
+          transition: "opacity 0.5s ease-in-out",
+        }}
       />
 
       {/* Overlay Content */}

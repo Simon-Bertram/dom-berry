@@ -9,12 +9,15 @@ const playfairDisplay = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
+  fallback: ["ui-serif", "Georgia", "serif"],
 });
 
 const sourceSansPro = Source_Sans_3({
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
+  preload: true,
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
