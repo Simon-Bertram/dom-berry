@@ -20,7 +20,8 @@ export default function Hero({
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const cloudName =
+    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME?.split("@")[1] || "dulwhlyqt";
 
   const handleVideoLoadedData = () => {
     setIsVideoLoaded(true);
