@@ -51,17 +51,22 @@ export function ContactFormFields({
         <FormField
           error={state.errors.name}
           htmlFor="name"
-          icon={<User className="mr-2 text-primary" size={16} />}
+          icon={
+            <User
+              className="mr-2 text-indigo-600 dark:text-indigo-400"
+              size={16}
+            />
+          }
           label="Your Name"
         >
           <input
             aria-describedby={state.errors.name ? "name-error" : undefined}
             aria-invalid={!!state.errors.name}
             aria-required="true"
-            className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-ring ${
+            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
               state.errors.name
-                ? "border-destructive focus:border-destructive"
-                : "border-input focus:border-ring"
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
             }`}
             id="name"
             maxLength={100}
@@ -74,17 +79,22 @@ export function ContactFormFields({
         <FormField
           error={state.errors.email}
           htmlFor="email"
-          icon={<Mail className="mr-2 text-primary" size={16} />}
+          icon={
+            <Mail
+              className="mr-2 text-indigo-600 dark:text-indigo-400"
+              size={16}
+            />
+          }
           label="Email Address"
         >
           <input
             aria-describedby={state.errors.email ? "email-error" : undefined}
             aria-invalid={!!state.errors.email}
             aria-required="true"
-            className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-ring ${
+            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
               state.errors.email
-                ? "border-destructive focus:border-destructive"
-                : "border-input focus:border-ring"
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
             }`}
             id="email"
             maxLength={254}
@@ -97,7 +107,12 @@ export function ContactFormFields({
         <FormField
           error={state.errors.projectType}
           htmlFor="projectType"
-          icon={<PenTool className="mr-2 text-primary" size={16} />}
+          icon={
+            <PenTool
+              className="mr-2 text-indigo-600 dark:text-indigo-400"
+              size={16}
+            />
+          }
           label="Project Type"
         >
           <div className="relative">
@@ -107,10 +122,10 @@ export function ContactFormFields({
               }
               aria-invalid={!!state.errors.projectType}
               aria-required="true"
-              className={`w-full appearance-none rounded-lg border bg-background p-3 pr-10 transition duration-150 focus:ring-ring ${
+              className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
                 state.errors.projectType
-                  ? "border-destructive focus:border-destructive"
-                  : "border-input focus:border-ring"
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
               }`}
               id="projectType"
               name="projectType"
@@ -124,14 +139,19 @@ export function ContactFormFields({
                 </option>
               ))}
             </select>
-            <ChevronDown className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-gray-500 dark:text-gray-400" />
           </div>
         </FormField>
 
         <FormField
           error={state.errors.projectBudget}
           htmlFor="projectBudget"
-          icon={<PoundSterling className="mr-2 text-primary" size={16} />}
+          icon={
+            <PoundSterling
+              className="mr-2 text-indigo-600 dark:text-indigo-400"
+              size={16}
+            />
+          }
           label="Estimated Budget Range"
         >
           <div className="relative">
@@ -141,10 +161,10 @@ export function ContactFormFields({
               }
               aria-invalid={!!state.errors.projectBudget}
               aria-required="true"
-              className={`w-full appearance-none rounded-lg border bg-background p-3 pr-10 transition duration-150 focus:ring-ring ${
+              className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
                 state.errors.projectBudget
-                  ? "border-destructive focus:border-destructive"
-                  : "border-input focus:border-ring"
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
               }`}
               id="projectBudget"
               name="projectBudget"
@@ -159,7 +179,7 @@ export function ContactFormFields({
                 </option>
               ))}
             </select>
-            <ChevronDown className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-gray-500 dark:text-gray-400" />
           </div>
         </FormField>
       </div>
@@ -167,7 +187,12 @@ export function ContactFormFields({
       <FormField
         error={state.errors.vision}
         htmlFor="vision"
-        icon={<MessageSquare className="mr-2 text-primary" size={16} />}
+        icon={
+          <MessageSquare
+            className="mr-2 text-indigo-600 dark:text-indigo-400"
+            size={16}
+          />
+        }
         label="Tell me about your vision (Project brief)"
       >
         <div>
@@ -175,10 +200,10 @@ export function ContactFormFields({
             aria-describedby={state.errors.vision ? "vision-error" : undefined}
             aria-invalid={!!state.errors.vision}
             aria-required="true"
-            className={`w-full rounded-lg border p-3 transition duration-150 focus:ring-ring ${
+            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
               state.errors.vision
-                ? "border-destructive focus:border-destructive"
-                : "border-input focus:border-ring"
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
             }`}
             id="vision"
             maxLength={2000}
@@ -191,7 +216,7 @@ export function ContactFormFields({
           />
           <div
             aria-live="polite"
-            className="mt-1 text-right text-muted-foreground text-sm"
+            className="mt-1 text-right text-gray-500 text-sm dark:text-gray-400"
           >
             {visionLength}/2000 characters
           </div>

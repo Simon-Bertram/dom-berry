@@ -48,7 +48,19 @@ export default function TestimonialsPage() {
 
                 {/* Testimonial Content */}
                 <blockquote className="mb-6 text-center text-gray-700 italic dark:text-gray-300">
-                  "{testimonial.content.split("\n")[0]}"
+                  {(() => {
+                    // Extract the testimonial quote from the blockquote section
+                    const lines = testimonial.content.split("\n");
+                    const quoteLine = lines.find((line) =>
+                      line.trim().startsWith(">")
+                    );
+                    if (quoteLine) {
+                      // Remove the "> " prefix and quotes
+                      return quoteLine.replace(/^>\s*"?/, "").replace(/"$/, "");
+                    }
+                    // Fallback to first line if no blockquote found
+                    return testimonial.content.split("\n")[0];
+                  })()}
                 </blockquote>
 
                 {/* Client Info */}

@@ -20,7 +20,7 @@ export function FormField({
   return (
     <div>
       <label
-        className="mb-1 flex items-center font-medium text-foreground text-sm"
+        className="mb-1 flex items-center font-medium text-gray-700 text-sm dark:text-gray-300"
         htmlFor={htmlFor}
       >
         {icon}
