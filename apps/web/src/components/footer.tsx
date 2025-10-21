@@ -60,13 +60,13 @@ export default function Footer() {
             </h4>
             <nav className="space-y-2">
               {sitemapLinks.map((link) => (
-                <Link
+                <a
                   className="block text-gray-400 text-sm transition-colors hover:text-gray-100"
                   href={link.href}
                   key={link.href}
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
             </nav>
           </div>

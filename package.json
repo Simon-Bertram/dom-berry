@@ -12,7 +12,12 @@
     "build": "turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
-    "dev:web": "turbo -F web dev"
+    "dev:web": "turbo -F web dev",
+    "perf:build": "turbo build --filter=web --profile",
+    "perf:dev": "turbo dev --filter=web --verbose",
+    "perf:cache": "turbo build --filter=web --dry-run",
+    "perf:clean": "turbo build --filter=web --force",
+    "perf:analyze": "turbo build --filter=web --profile"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
