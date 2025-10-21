@@ -10,10 +10,10 @@ export default function ServicesPage() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 dark:text-white">
+          <h1 className="mb-4 font-bold font-display text-4xl text-gray-900 dark:text-white">
             Our Services
           </h1>
-          <p className="mx-auto max-w-3xl rounded-lg p-4 text-gray-800 text-xl dark:text-white">
+          <p className="mx-auto max-w-3xl rounded-lg p-4 font-body text-gray-800 text-xl dark:text-white">
             Professional videography services across the Southwest. From
             corporate films to wedding videos, we bring your vision to life with
             cinematic quality.

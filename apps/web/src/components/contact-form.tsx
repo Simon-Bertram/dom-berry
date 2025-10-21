@@ -19,10 +19,10 @@ export default function ContactForm() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4 sm:p-8">
       <div className="w-full max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-2xl sm:p-10 dark:border-gray-700 dark:bg-gray-800">
-        <h1 className="mb-2 font-extrabold text-3xl text-gray-900 dark:text-gray-100">
+        <h1 className="mb-2 font-display font-extrabold text-3xl text-gray-900 dark:text-gray-100">
           Start Your Project
         </h1>
-        <p className="mb-8 text-gray-600 dark:text-gray-300">
+        <p className="mb-8 font-body text-gray-600 dark:text-gray-300">
           Tell me about your video vision for the Southwest. I'll get back to
           you with a personalized quote and timeline.
         </p>

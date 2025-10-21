@@ -16,10 +16,10 @@ export default function TestimonialsPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-16 text-center">
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 dark:text-gray-100">
+          <h1 className="mb-4 font-bold font-display text-4xl text-gray-900 dark:text-gray-100">
             Client Testimonials
           </h1>
-          <p className="mx-auto max-w-3xl text-gray-600 text-xl dark:text-gray-300">
+          <p className="mx-auto max-w-3xl font-body text-gray-600 text-xl dark:text-gray-300">
             Don't just take our word for it. Here's what our clients say about
             working with us.
           </p>

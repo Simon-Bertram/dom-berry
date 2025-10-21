@@ -4,8 +4,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Inter", "Geist", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: var(--font-body), "Source Sans Pro", ui-sans-serif, system-ui,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  --font-serif: var(--font-display), "Playfair Display", ui-serif, Georgia,
+    serif;
 }
 
 :root {
@@ -127,6 +130,16 @@ body {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-serif);
+  }
+
+  .font-body {
+    font-family: var(--font-sans);
   }
 }

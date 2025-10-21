@@ -6,10 +6,10 @@ export default function AboutPage() {
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <header className="mb-16 text-center">
-          <h1 className="mb-4 font-bold text-4xl text-gray-900 dark:text-white">
+          <h1 className="mb-4 font-bold font-display text-4xl text-gray-900 dark:text-white">
             About Dom Berry
           </h1>
-          <p className="text-gray-600 text-xl dark:text-gray-300">
+          <p className="font-body text-gray-600 text-xl dark:text-gray-300">
             Professional filmmaker based in the Southwest
           </p>
         </header>
@@ -18,7 +18,7 @@ export default function AboutPage() {
         <main className="space-y-12">
           {/* About Section */}
           <section className="rounded-xl bg-white p-8 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-6 font-bold text-2xl text-gray-900 dark:text-white">
+            <h2 className="mb-6 font-bold font-display text-2xl text-gray-900 dark:text-white">
               Our Story
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700 dark:text-gray-300">
@@ -43,7 +43,7 @@ export default function AboutPage() {
 
           {/* Values Section */}
           <section className="rounded-xl bg-gray-50 p-8 dark:bg-gray-900">
-            <h2 className="mb-6 font-bold text-2xl text-gray-900 dark:text-white">
+            <h2 className="mb-6 font-bold font-display text-2xl text-gray-900 dark:text-white">
               What We Value
             </h2>
             <div className="grid gap-6 md:grid-cols-2">

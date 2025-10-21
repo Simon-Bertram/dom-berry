@@ -8,10 +8,10 @@ export default function Home() {
     <Hero
       overlayContent={
         <div className="space-y-6">
-          <h1 className="font-bold text-5xl text-black tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="font-bold font-display text-5xl text-black tracking-tight sm:text-6xl lg:text-7xl">
             Dom Berry
           </h1>
-          <p className="font-bold text-black/90 text-xl sm:text-2xl">
+          <p className="font-body font-bold text-black/90 text-xl sm:text-2xl">
             Professional filmmaking services
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">

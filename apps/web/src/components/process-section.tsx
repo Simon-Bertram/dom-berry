@@ -28,7 +28,7 @@ const processSteps: ProcessStep[] = [
 export function ProcessSection() {
   return (
     <div className="mb-16 rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 dark:border-gray-700 dark:from-slate-800 dark:to-indigo-900">
-      <h2 className="mb-8 text-center font-bold text-3xl text-gray-900 dark:text-white">
+      <h2 className="mb-8 text-center font-bold font-display text-3xl text-gray-900 dark:text-white">
         Our Process
       </h2>
 
@@ -40,7 +40,7 @@ export function ProcessSection() {
                 {step.number}
               </span>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-900 text-lg dark:text-white">
+            <h3 className="mb-2 font-display font-semibold text-gray-900 text-lg dark:text-white">
               {step.title}
             </h3>
             <p className="text-gray-600 dark:text-gray-300">

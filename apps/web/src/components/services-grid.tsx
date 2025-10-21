@@ -26,7 +26,7 @@ export function ServicesGrid({ services }: ServicesGridProps) {
               <div className="rounded-lg bg-indigo-100 p-2 dark:bg-indigo-900">
                 <Film className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
               </div>
-              <CardTitle className="text-gray-900 text-xl dark:text-white">
+              <CardTitle className="font-display text-gray-900 text-xl dark:text-white">
                 {service.title}
               </CardTitle>
             </div>
@@ -37,7 +37,7 @@ export function ServicesGrid({ services }: ServicesGridProps) {
 
           <CardContent className="flex flex-1 flex-col">
             <div className="mb-6">
-              <h4 className="mb-3 font-semibold text-gray-900 dark:text-white">
+              <h4 className="mb-3 font-display font-semibold text-gray-900 dark:text-white">
                 What's Included:
               </h4>
               <ul className="space-y-2">
