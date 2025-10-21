@@ -1,5 +1,4 @@
 import { ExternalLink } from "lucide-react";
-import Link from "next/link";
 
 const socialLinks = [
   {
@@ -98,13 +97,13 @@ export default function Footer() {
         <div className="mt-8 border-gray-800 border-t pt-8">
           <nav className="flex flex-wrap justify-center gap-6 md:justify-start">
             {legalLinks.map((link) => (
-              <Link
+              <a
                 className="text-gray-500 text-xs transition-colors hover:text-gray-300"
                 href={link.href}
                 key={link.href}
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </nav>
         </div>
