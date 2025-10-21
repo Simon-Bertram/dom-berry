@@ -9,11 +9,11 @@ import { Button } from "./ui/button";
 export default function Header() {
   return (
     <div>
-      <div className="flex flex-row items-center justify-between px-2 py-1">
+      <div className="flex flex-row items-center justify-between px-4 py-2">
         <Logo />
-        <NavItems className="hidden items-center gap-6 md:flex" />
-        <div className="flex items-center gap-2">
-          <Button asChild className="hidden md:inline-flex">
+        <NavItems className="hidden items-center gap-8 lg:flex" />
+        <div className="flex items-center gap-3">
+          <Button asChild className="hidden lg:inline-flex">
             <Link href="/contact">Start your project</Link>
           </Button>
           <ModeToggle />

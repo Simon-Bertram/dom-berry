@@ -1,8 +1,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type NavItem<T extends string = string> = {
-  href: T;
+type NavItem = {
+  href:
+    | "/"
+    | "/services"
+    | "/portfolio"
+    | "/testimonials"
+    | "/about"
+    | "/contact";
   label: string;
 };
 
@@ -22,7 +28,7 @@ type NavItemsProps = {
 
 export function NavItems({
   onItemClick,
-  className = "flex items-center gap-6",
+  className = "flex items-center gap-8",
 }: NavItemsProps) {
   const pathname = usePathname();
   return (
@@ -30,9 +36,9 @@ export function NavItems({
       {navItems.map((item) => (
         <Link
           className={`font-medium text-sm transition-colors hover:text-foreground/90 ${pathname === item.href ? "text-foreground" : "text-foreground/70"}`}
-          href={item.href as any}
+          href={item.href}
           key={item.href}
-          onClick={onItemClick}
+          {...(onItemClick && { onClick: onItemClick })}
         >
           {item.label}
         </Link>

@@ -29,7 +29,7 @@ export function MobileMenu() {
           aria-controls="mobile-navigation"
           aria-expanded={isMobileMenuOpen}
           aria-label="Open navigation menu"
-          className="md:hidden"
+          className="lg:hidden"
           size="icon"
           variant="ghost"
         >

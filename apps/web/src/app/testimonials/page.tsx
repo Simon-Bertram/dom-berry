@@ -4,6 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAllTestimonials } from "@/lib/content";
 
+// Regex patterns for extracting testimonial quotes
+const QUOTE_PREFIX_REGEX = /^>\s*"?/;
+const QUOTE_SUFFIX_REGEX = /"$/;
+
 export default function TestimonialsPage() {
   const testimonials = getAllTestimonials();
 
@@ -56,7 +60,9 @@ export default function TestimonialsPage() {
                     );
                     if (quoteLine) {
                       // Remove the "> " prefix and quotes
-                      return quoteLine.replace(/^>\s*"?/, "").replace(/"$/, "");
+                      return quoteLine
+                        .replace(QUOTE_PREFIX_REGEX, "")
+                        .replace(QUOTE_SUFFIX_REGEX, "");
                     }
                     // Fallback to first line if no blockquote found
                     return testimonial.content.split("\n")[0];
