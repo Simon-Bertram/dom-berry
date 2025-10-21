@@ -31,10 +31,13 @@ type ContactFormData = {
   formTimestamp?: string; // Timestamp for bot detection
 };
 
-type ContactFormResult = {
-  success: boolean;
-  message?: string;
-  fieldErrors?: Record<string, string>;
+type FormStatus = "idle" | "loading" | "success" | "error";
+type FormErrors = Record<string, string>;
+
+type FormState = {
+  status: FormStatus;
+  message: string;
+  errors: FormErrors;
 };
 
 // Enhanced Zod schema with better validation messages using constants
@@ -196,7 +199,7 @@ function sendEmail(
 
 export async function submitContactForm(
   formData: FormData
-): Promise<ContactFormResult> {
+): Promise<FormState> {
   try {
     // Get client IP from headers for rate limiting
     const headersList = await headers();
@@ -219,8 +222,9 @@ export async function submitContactForm(
 
     if (rateLimited) {
       return {
-        success: false,
+        status: "error",
         message: "Too many requests. Please wait a moment and try again.",
+        errors: {},
       };
     }
 
@@ -236,9 +240,9 @@ export async function submitContactForm(
       logFormSubmission(data, false, "Validation failed");
 
       return {
-        success: false,
+        status: "error",
         message: "Please correct the errors below and try again.",
-        fieldErrors,
+        errors: fieldErrors,
       };
     }
 
@@ -247,8 +251,9 @@ export async function submitContactForm(
     if (!timingValidation.isValid) {
       logFormSubmission(data, false, "Form submitted too quickly");
       return {
-        success: false,
-        message: timingValidation.message,
+        status: "error",
+        message: timingValidation.message || "Form submitted too quickly",
+        errors: {},
       };
     }
 
@@ -258,16 +263,18 @@ export async function submitContactForm(
     if (emailResult.success) {
       logFormSubmission(data, true);
       return {
-        success: true,
+        status: "success",
         message:
           "TODO - add email functionality. Your form has been received and validated successfully.",
+        errors: {},
       };
     }
 
     logFormSubmission(data, false, emailResult.error);
     return {
-      success: false,
+      status: "error",
       message: "Failed to send email. Please try again or contact us directly.",
+      errors: {},
     };
   } catch (error) {
     const errorMessage =
@@ -278,9 +285,10 @@ export async function submitContactForm(
     console.error("Contact form submission error:", errorMessage);
 
     return {
-      success: false,
+      status: "error",
       message:
         "A technical error occurred. Please try again or contact us directly if the problem persists.",
+      errors: {},
     };
   }
 }

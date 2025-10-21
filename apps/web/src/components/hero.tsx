@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useVideoPlayer } from "@/hooks/use-video-player";
+import { getDesktopVideoUrl, getMobileVideoUrl } from "@/lib/video-utils";
 
 type HeroProps = {
   desktopVideoId?: string;
@@ -17,29 +18,12 @@ export default function Hero({
   overlayContent,
   className = "",
 }: HeroProps) {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-
-  const cloudName =
-    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME?.split("@")[1] || "dulwhlyqt";
-
-  const handleVideoLoadedData = () => {
-    setIsVideoLoaded(true);
-  };
-
-  const handleVideoError = () => {
-    setHasError(true);
-    setIsVideoLoaded(false);
-  };
+  const { isVideoLoaded, hasError, handleVideoLoadedData, handleVideoError } =
+    useVideoPlayer();
 
   // Generate Cloudinary URLs with optimizations
-  const desktopVideoUrl = cloudName
-    ? `https://res.cloudinary.com/${cloudName}/video/upload/f_auto,q_auto:low,w_1920/${desktopVideoId}`
-    : "https://res.cloudinary.com/dulwhlyqt/video/upload/v1760739350/282995_tiny_v9w8sa.mp4";
-
-  const mobileVideoUrl = cloudName
-    ? `https://res.cloudinary.com/${cloudName}/video/upload/f_auto,q_auto:low,w_768/${mobileVideoId}`
-    : "https://res.cloudinary.com/dulwhlyqt/video/upload/v1760739349/307864_tiny_p3smba.mp4";
+  const desktopVideoUrl = getDesktopVideoUrl(desktopVideoId);
+  const mobileVideoUrl = getMobileVideoUrl(mobileVideoId);
 
   return (
     <section
