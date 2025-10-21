@@ -1,5 +1,9 @@
 import ContactForm from "@/components/contact-form";
 
 export default function ContactPage() {
-  return <ContactForm />;
+  return (
+    <div className="min-h-screen bg-background">
+      <ContactForm />
+    </div>
+  );
 }

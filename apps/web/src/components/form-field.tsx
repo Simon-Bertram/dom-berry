@@ -20,7 +20,7 @@ export function FormField({
   return (
     <div>
       <label
-        className="mb-1 flex items-center font-medium text-gray-700 text-sm"
+        className="mb-1 flex items-center font-medium text-foreground text-sm"
         htmlFor={htmlFor}
       >
         {icon}
@@ -30,7 +30,7 @@ export function FormField({
       {error && (
         <p
           aria-live="polite"
-          className="mt-1 text-red-600 text-sm"
+          className="mt-1 text-destructive text-sm"
           id={errorId}
           role="alert"
         >
