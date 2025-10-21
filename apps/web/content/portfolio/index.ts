@@ -1,8 +1,8 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import matter from "gray-matter";
-import { join } from "path";
 
-export type PortfolioProject {
+export type PortfolioProject = {
   title: string;
   client: string;
   category: string;
@@ -17,7 +17,7 @@ export type PortfolioProject {
   featured: boolean;
   slug: string;
   content: string;
-}
+};
 
 const portfolioDirectory = join(process.cwd(), "content/portfolio");
 const mdxExtensionRegex = /\.mdx$/;

@@ -62,7 +62,7 @@ export function MobileMenu() {
                   ? "bg-accent text-accent-foreground"
                   : "text-foreground"
               }`}
-              href={item.href as any}
+              href={item.href}
               key={item.href}
               onClick={handleItemClick}
             >
@@ -71,11 +71,7 @@ export function MobileMenu() {
           ))}
           <div className="mt-8 border-t pt-4">
             <Button asChild className="w-full" size="lg">
-              <Link
-                as={"/contact" as any}
-                href="/contact"
-                onClick={handleItemClick}
-              >
+              <Link href="/contact" onClick={handleItemClick}>
                 Start your project
               </Link>
             </Button>

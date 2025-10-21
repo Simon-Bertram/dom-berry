@@ -21,7 +21,7 @@ export default function ServicesPage() {
           <h1 className="mb-4 font-bold text-4xl text-gray-900 dark:text-white">
             Our Services
           </h1>
-          <p className="mx-auto max-w-3xl rounded-lg bg-white/40 p-4 text-gray-600 text-xl dark:bg-gray-900/40 dark:text-gray-300">
+          <p className="mx-auto max-w-3xl rounded-lg p-4 text-gray-800 text-xl dark:text-white">
             Professional videography services across the Southwest. From
             corporate films to wedding videos, we bring your vision to life with
             cinematic quality.
@@ -29,9 +29,9 @@ export default function ServicesPage() {
         </div>
 
         {/* Services Grid */}
-        <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="relative mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {/* Background image */}
-          <div className="-z-10 fixed inset-0">
+          <div className="-z-20 absolute inset-0">
             <Image
               alt="Services Background"
               className="object-cover"
