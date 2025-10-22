@@ -4,6 +4,7 @@ import { BUSINESS_INFO } from "./business-info";
 export type StructuredData = {
   "@context": string;
   "@type": string;
+  [key: string]: unknown;
 };
 
 // LocalBusiness Schema
@@ -34,14 +35,6 @@ export const localBusinessSchema = (): StructuredData => ({
     name: area,
   })),
   serviceType: BUSINESS_INFO.services,
-  openingHoursSpecification: Object.entries(BUSINESS_INFO.hours)
-    .map(([day, hours]) => ({
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: day.charAt(0).toUpperCase() + day.slice(1),
-      opens: hours === "Closed" ? undefined : hours.split(" - ")[0],
-      closes: hours === "Closed" ? undefined : hours.split(" - ")[1],
-    }))
-    .filter((spec) => spec.opens && spec.closes),
   sameAs: Object.values(BUSINESS_INFO.social),
 });
 

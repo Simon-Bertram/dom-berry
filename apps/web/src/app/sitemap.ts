@@ -50,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const portfolioPages: MetadataRoute.Sitemap = getAllPortfolioProjects().map(
     (project) => ({
       url: `${baseUrl}/portfolio/${project.slug}`,
-      lastModified: new Date(project.date || currentDate).toISOString(),
+      lastModified: new Date(project.year || currentDate).toISOString(),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })
