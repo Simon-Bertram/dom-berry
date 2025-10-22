@@ -6,7 +6,7 @@ import Hero from "@/components/hero";
 export default function Home() {
   return (
     <Hero
-      className="-mt-[72px]"
+      className="-mt-[72px] -z-10"
       overlayContent={
         <div className="space-y-6">
           <h1 className="font-bold font-display text-5xl text-black tracking-tight sm:text-6xl lg:text-7xl">

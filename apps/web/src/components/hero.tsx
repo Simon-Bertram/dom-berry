@@ -28,7 +28,7 @@ export default function Hero({
   return (
     <section
       aria-label="Hero video section"
-      className={`hero-section relative h-[100vh] w-full overflow-hidden ${className}`}
+      className={`hero-section -z-50 h-[100vh] w-full overflow-hidden ${className}`}
     >
       {/* Video Element - Always present to prevent CLS */}
       <video
