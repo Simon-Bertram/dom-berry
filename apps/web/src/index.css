@@ -219,4 +219,16 @@ body {
   .page-content {
     @apply bg-background min-h-screen;
   }
+
+  /* Accessible skip link for keyboard users */
+  .skip-link {
+    @apply sr-only fixed left-4 top-4 z-50 rounded-md px-4 py-2 shadow-md;
+    @apply bg-primary text-primary-foreground;
+  }
+  .skip-link:focus {
+    @apply not-sr-only;
+  }
+  .skip-link:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
 }

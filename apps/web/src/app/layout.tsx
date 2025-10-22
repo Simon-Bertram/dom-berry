@@ -35,9 +35,12 @@ export default function RootLayout({
       <body
         className={`${playfairDisplay.variable} ${sourceSansPro.variable} antialiased`}
       >
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
         <Providers>
           <Header />
-          <main>{children}</main>
+          <main id="main-content">{children}</main>
           <Footer />
         </Providers>
       </body>

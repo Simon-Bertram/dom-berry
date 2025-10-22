@@ -127,6 +127,7 @@ export function ContactFormFields({
                   ? "border-red-500 focus:border-red-500"
                   : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
               }`}
+              defaultValue=""
               id="projectType"
               name="projectType"
             >
@@ -166,6 +167,7 @@ export function ContactFormFields({
                   ? "border-red-500 focus:border-red-500"
                   : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
               }`}
+              defaultValue=""
               id="projectBudget"
               name="projectBudget"
               required

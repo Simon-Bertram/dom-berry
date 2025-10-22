@@ -68,7 +68,7 @@ export function MobileMenu() {
               {item.label}
             </Link>
           ))}
-          <div className="mt-8 border-t pt-4">
+          <div className="mt-8 border-t px-8 pt-4">
             <Button asChild className="w-full" size="lg">
               <Link href="/contact" onClick={closeMobileMenu}>
                 Start your project
