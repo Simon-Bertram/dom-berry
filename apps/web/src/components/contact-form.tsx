@@ -22,9 +22,9 @@ export default function ContactForm() {
         <h1 className="mb-2 font-display font-extrabold text-3xl text-gray-900 dark:text-gray-100">
           Start Your Project
         </h1>
-        <p className="mb-8 font-body text-gray-600 dark:text-gray-300">
-          Tell me about your video vision for the Southwest. I'll get back to
-          you with a personalized quote and timeline.
+        <p className="font-body text-gray-600 dark:text-gray-300">
+          Tell me about your video vision, I&apos;ll get back to you with a
+          personalized quote and timeline.
         </p>
 
         <Form
