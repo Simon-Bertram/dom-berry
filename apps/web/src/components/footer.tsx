@@ -41,38 +41,42 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-12 border-gray-800 border-t bg-gray-900 text-gray-100">
+    <footer className="mt-12 border-gray-800 border-t bg-gray-900 text-gray-50">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Copyright and Brand */}
           <div className="lg:col-span-2">
-            <h3 className="mb-4 font-semibold text-lg">{BUSINESS_INFO.name}</h3>
-            <p className="mb-4 text-gray-400 text-sm">
+            <h3 className="mb-4 font-semibold text-lg text-white">
+              {BUSINESS_INFO.name}
+            </h3>
+            <p className="mb-4 text-gray-200 text-sm leading-relaxed">
               {BUSINESS_INFO.description}
             </p>
-            <div className="mb-4 text-gray-400 text-sm">
-              <p className="font-medium text-gray-300">Contact Information:</p>
-              <p>
+            <div className="mb-4 text-gray-200 text-sm">
+              <p className="mb-2 font-medium text-gray-100">
+                Contact Information:
+              </p>
+              <p className="mb-1">
                 📍 {BUSINESS_INFO.address.street},{" "}
                 {BUSINESS_INFO.address.county}
               </p>
-              <p>📞 {BUSINESS_INFO.contact.phone}</p>
+              <p className="mb-1">📞 {BUSINESS_INFO.contact.phone}</p>
               <p>✉️ {BUSINESS_INFO.contact.email}</p>
             </div>
-            <p className="text-gray-500 text-xs">
+            <p className="text-gray-300 text-xs">
               © {currentYear} {BUSINESS_INFO.name}. All rights reserved.
             </p>
           </div>
 
           {/* Sitemap */}
           <div>
-            <h4 className="mb-4 font-semibold text-sm uppercase tracking-wide">
+            <h4 className="mb-4 font-semibold text-sm text-white uppercase tracking-wide">
               Quick Links
             </h4>
             <nav className="space-y-2">
               {sitemapLinks.map((link) => (
                 <a
-                  className="block text-gray-400 text-sm transition-colors hover:text-gray-100"
+                  className="block text-gray-200 text-sm transition-colors hover:text-white hover:underline"
                   href={link.href}
                   key={link.href}
                 >
@@ -84,20 +88,20 @@ export default function Footer() {
 
           {/* Service Areas */}
           <div>
-            <h4 className="mb-4 font-semibold text-sm uppercase tracking-wide">
+            <h4 className="mb-4 font-semibold text-sm text-white uppercase tracking-wide">
               Service Areas
             </h4>
             <div className="space-y-1">
               {BUSINESS_INFO.serviceAreas
                 .slice(0, MAX_SERVICE_AREAS_DISPLAYED)
                 .map((area) => (
-                  <p className="text-gray-400 text-sm" key={area}>
+                  <p className="text-gray-200 text-sm" key={area}>
                     {area}
                   </p>
                 ))}
               {BUSINESS_INFO.serviceAreas.length >
                 MAX_SERVICE_AREAS_DISPLAYED && (
-                <p className="text-gray-500 text-xs">
+                <p className="text-gray-300 text-xs">
                   +
                   {BUSINESS_INFO.serviceAreas.length -
                     MAX_SERVICE_AREAS_DISPLAYED}{" "}
@@ -109,13 +113,13 @@ export default function Footer() {
 
           {/* Social Media */}
           <div>
-            <h4 className="mb-4 font-semibold text-sm uppercase tracking-wide">
+            <h4 className="mb-4 font-semibold text-sm text-white uppercase tracking-wide">
               Follow Us
             </h4>
             <div className="space-y-2">
               {socialLinks.map((social) => (
                 <a
-                  className="flex items-center gap-2 text-gray-400 text-sm transition-colors hover:text-gray-100"
+                  className="flex items-center gap-2 text-gray-200 text-sm transition-colors hover:text-white hover:underline"
                   href={social.href}
                   key={social.name}
                   rel="noopener noreferrer"
@@ -135,7 +139,7 @@ export default function Footer() {
           <nav className="flex flex-wrap justify-center gap-6 md:justify-start">
             {legalLinks.map((link) => (
               <a
-                className="text-gray-500 text-xs transition-colors hover:text-gray-300"
+                className="text-gray-300 text-xs transition-colors hover:text-white hover:underline"
                 href={link.href}
                 key={link.href}
               >

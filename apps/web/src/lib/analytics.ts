@@ -4,7 +4,9 @@ export function trackEvent(
   event: string,
   properties?: Record<string, unknown>
 ): void {
-  posthog.capture(event, properties);
+  if (posthog.__loaded) {
+    posthog.capture(event, properties);
+  }
 }
 
 export function trackButtonClick(
@@ -12,15 +14,19 @@ export function trackButtonClick(
   page: string,
   properties?: Record<string, unknown>
 ): void {
-  posthog.capture("button_click", {
-    button_text: buttonText,
-    page,
-    ...properties,
-  });
+  if (posthog.__loaded) {
+    posthog.capture("button_click", {
+      button_text: buttonText,
+      page,
+      ...properties,
+    });
+  }
 }
 
 export function trackNavigationClick(label: string, currentPath: string): void {
-  posthog.capture("navigation_click", { label, current_path: currentPath });
+  if (posthog.__loaded) {
+    posthog.capture("navigation_click", { label, current_path: currentPath });
+  }
 }
 
 export function trackFormSubmit(
@@ -28,11 +34,13 @@ export function trackFormSubmit(
   success: boolean,
   properties?: Record<string, unknown>
 ): void {
-  posthog.capture("form_submit", {
-    form_name: formName,
-    success,
-    ...properties,
-  });
+  if (posthog.__loaded) {
+    posthog.capture("form_submit", {
+      form_name: formName,
+      success,
+      ...properties,
+    });
+  }
 }
 
 export function trackFormError(
@@ -40,9 +48,11 @@ export function trackFormError(
   errorType: string,
   properties?: Record<string, unknown>
 ): void {
-  posthog.capture("form_error", {
-    form_name: formName,
-    error_type: errorType,
-    ...properties,
-  });
+  if (posthog.__loaded) {
+    posthog.capture("form_error", {
+      form_name: formName,
+      error_type: errorType,
+      ...properties,
+    });
+  }
 }

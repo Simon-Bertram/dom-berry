@@ -2,26 +2,11 @@
 
 import Link from "next/link";
 import Hero from "@/components/hero";
-import { useABTest } from "@/hooks/use-ab-test";
 import { trackButtonClick } from "@/lib/analytics";
 
 export default function HeroWithCTA() {
-  // A/B Test for hero CTA button colors
-  const { variant: ctaVariant, trackConversion } = useABTest("hero-cta-colors");
-
-  const handleCTAClick = (buttonText: string, href: string) => {
+  const handleCTAClick = (buttonText: string) => {
     trackButtonClick(buttonText, "/");
-    trackConversion("cta_click", { button_text: buttonText, href });
-  };
-
-  const getCTAButtonClass = () => {
-    if (ctaVariant === "variant-a") {
-      return "bg-blue-600 text-white hover:bg-blue-700";
-    }
-    if (ctaVariant === "variant-b") {
-      return "bg-green-600 text-white hover:bg-green-700";
-    }
-    return "bg-white text-black hover:bg-white/90";
   };
 
   return (
@@ -37,16 +22,16 @@ export default function HeroWithCTA() {
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
             <Link
-              className={`rounded-lg px-8 py-3 font-semibold text-lg transition-colors ${getCTAButtonClass()}`}
+              className="rounded-lg bg-white px-8 py-3 font-semibold text-black text-lg transition-colors hover:bg-white/90"
               href="/portfolio"
-              onClick={() => handleCTAClick("View Portfolio", "/portfolio")}
+              onClick={() => handleCTAClick("View Portfolio")}
             >
               View Portfolio
             </Link>
             <Link
               className="rounded-lg border-2 border-white px-8 py-3 font-semibold text-lg text-white transition-colors hover:bg-white hover:text-black"
               href="/contact"
-              onClick={() => handleCTAClick("Contact Us", "/contact")}
+              onClick={() => handleCTAClick("Contact Us")}
             >
               Contact Us
             </Link>
