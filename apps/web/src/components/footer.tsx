@@ -35,6 +35,8 @@ const legalLinks = [
   { href: "/terms", label: "Terms of Service" },
 ];
 
+const MAX_SERVICE_AREAS_DISPLAYED = 6;
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -86,14 +88,20 @@ export default function Footer() {
               Service Areas
             </h4>
             <div className="space-y-1">
-              {BUSINESS_INFO.serviceAreas.slice(0, 6).map((area) => (
-                <p className="text-gray-400 text-sm" key={area}>
-                  {area}
-                </p>
-              ))}
-              {BUSINESS_INFO.serviceAreas.length > 6 && (
+              {BUSINESS_INFO.serviceAreas
+                .slice(0, MAX_SERVICE_AREAS_DISPLAYED)
+                .map((area) => (
+                  <p className="text-gray-400 text-sm" key={area}>
+                    {area}
+                  </p>
+                ))}
+              {BUSINESS_INFO.serviceAreas.length >
+                MAX_SERVICE_AREAS_DISPLAYED && (
                 <p className="text-gray-500 text-xs">
-                  +{BUSINESS_INFO.serviceAreas.length - 6} more areas
+                  +
+                  {BUSINESS_INFO.serviceAreas.length -
+                    MAX_SERVICE_AREAS_DISPLAYED}{" "}
+                  more areas
                 </p>
               )}
             </div>

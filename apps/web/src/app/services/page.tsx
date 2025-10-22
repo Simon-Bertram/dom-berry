@@ -33,6 +33,7 @@ export default function ServicesPage() {
       {/* Service Schema for each service */}
       {SERVICES.map((service) => (
         <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for JSON-LD structured data
           dangerouslySetInnerHTML={{
             __html: generateJsonLd(serviceSchema(service)),
           }}

@@ -1,8 +1,8 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import matter from "gray-matter";
-import { join } from "path";
 
-export interface Testimonial {
+export type Testimonial = {
   name: string;
   role: string;
   company: string;
@@ -12,15 +12,16 @@ export interface Testimonial {
   image: string;
   slug: string;
   content: string;
-}
+};
 
 const testimonialsDirectory = join(process.cwd(), "content/testimonials");
+const mdxExtensionRegex = /\.mdx$/;
 
 export function getAllTestimonials(): Testimonial[] {
   const fileNames = ["testimonial-1.mdx", "testimonial-2.mdx"];
 
   const allTestimonials = fileNames.map((fileName) => {
-    const slug = fileName.replace(/\.mdx$/, "");
+    const slug = fileName.replace(mdxExtensionRegex, "");
     const fullPath = join(testimonialsDirectory, fileName);
     const fileContents = readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);

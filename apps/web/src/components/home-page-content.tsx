@@ -22,7 +22,7 @@ export default function HomePageContent({
   // A/B Test for homepage layout
   const { variant: layoutVariant } = useABTest("homepage-layout-variant");
 
-  const handlePortfolioClick = (projectSlug: string) => {
+  const handlePortfolioClick = () => {
     trackButtonClick("View Portfolio", "/");
   };
 
@@ -88,7 +88,7 @@ export default function HomePageContent({
                 <Link
                   className="text-indigo-600 underline underline-offset-4 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
                   href="/portfolio"
-                  onClick={() => handlePortfolioClick("all")}
+                  onClick={handlePortfolioClick}
                 >
                   View all
                 </Link>
@@ -136,7 +136,7 @@ export default function HomePageContent({
                 <Link
                   className="text-indigo-600 underline underline-offset-4 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
                   href="/portfolio"
-                  onClick={() => handlePortfolioClick("all")}
+                  onClick={handlePortfolioClick}
                 >
                   View all
                 </Link>
