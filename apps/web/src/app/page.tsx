@@ -4,13 +4,22 @@ import Hero from "@/components/hero";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAllPortfolioProjects, getAllTestimonials } from "@/lib/content";
 
+const NUM_HOMEPAGE_ITEMS = 3;
+const DECIMAL_RADIX = 10;
+const QUOTE_PREFIX_REGEX = /^>\s*"?/;
+const QUOTE_SUFFIX_REGEX = /"$/;
+
 export default function Home() {
   const projects = getAllPortfolioProjects()
     .slice()
-    .sort((a, b) => Number.parseInt(b.year, 10) - Number.parseInt(a.year, 10))
-    .slice(0, 3);
+    .sort(
+      (a, b) =>
+        Number.parseInt(b.year, DECIMAL_RADIX) -
+        Number.parseInt(a.year, DECIMAL_RADIX)
+    )
+    .slice(0, NUM_HOMEPAGE_ITEMS);
 
-  const testimonials = getAllTestimonials().slice(0, 3);
+  const testimonials = getAllTestimonials().slice(0, NUM_HOMEPAGE_ITEMS);
 
   return (
     <>
@@ -113,8 +122,8 @@ export default function Home() {
                       );
                       if (quoteLine) {
                         return quoteLine
-                          .replace(/^>\s*"?/, "")
-                          .replace(/"$/, "");
+                          .replace(QUOTE_PREFIX_REGEX, "")
+                          .replace(QUOTE_SUFFIX_REGEX, "");
                       }
                       return t.content.split("\n")[0];
                     })()}
