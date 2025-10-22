@@ -6,7 +6,6 @@ import Header from "@/components/header";
 import Providers from "@/components/providers";
 import { BUSINESS_INFO } from "@/lib/business-info";
 import {
-  generateJsonLd,
   localBusinessSchema,
   organizationSchema,
   websiteSchema,
@@ -96,24 +95,15 @@ export default function RootLayout({
     <html lang="en-GB" suppressHydrationWarning>
       <head>
         {/* Structured Data */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: generateJsonLd(websiteSchema()),
-          }}
-          type="application/ld+json"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: generateJsonLd(organizationSchema()),
-          }}
-          type="application/ld+json"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: generateJsonLd(localBusinessSchema()),
-          }}
-          type="application/ld+json"
-        />
+        <script suppressHydrationWarning type="application/ld+json">
+          {JSON.stringify(websiteSchema(), null, 2)}
+        </script>
+        <script suppressHydrationWarning type="application/ld+json">
+          {JSON.stringify(organizationSchema(), null, 2)}
+        </script>
+        <script suppressHydrationWarning type="application/ld+json">
+          {JSON.stringify(localBusinessSchema(), null, 2)}
+        </script>
       </head>
       <body
         className={`${playfairDisplay.variable} ${sourceSansPro.variable} antialiased`}
