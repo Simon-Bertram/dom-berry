@@ -12,6 +12,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useNavigation } from "@/hooks/use-navigation";
+import {
+  trackButtonClick,
+  trackEvent,
+  trackNavigationClick,
+} from "@/lib/analytics";
 import { navItems } from "./nav-items";
 
 export function MobileMenu() {
@@ -22,8 +27,25 @@ export function MobileMenu() {
     closeMobileMenu,
   } = useNavigation();
 
+  const handleMenuToggle = (open: boolean) => {
+    setIsMobileMenuOpen(open);
+    trackEvent("mobile_menu_toggle", {
+      action: open ? "open" : "close",
+    });
+  };
+
+  const handleNavClick = (item: (typeof navItems)[0]) => {
+    trackNavigationClick(item.label, window.location.pathname);
+    closeMobileMenu();
+  };
+
+  const handleCTAClick = () => {
+    trackButtonClick("Start your project", window.location.pathname);
+    closeMobileMenu();
+  };
+
   return (
-    <Sheet onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
+    <Sheet onOpenChange={handleMenuToggle} open={isMobileMenuOpen}>
       <SheetTrigger asChild>
         <Button
           aria-controls="mobile-navigation"
@@ -63,14 +85,14 @@ export function MobileMenu() {
               }`}
               href={item.href}
               key={item.href}
-              onClick={closeMobileMenu}
+              onClick={() => handleNavClick(item)}
             >
               {item.label}
             </Link>
           ))}
           <div className="mt-8 border-t px-8 pt-4">
             <Button asChild className="w-full" size="lg">
-              <Link href="/contact" onClick={closeMobileMenu}>
+              <Link href="/contact" onClick={handleCTAClick}>
                 Start your project
               </Link>
             </Button>

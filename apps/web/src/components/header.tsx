@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { trackButtonClick } from "@/lib/analytics";
 import Logo from "./logo";
 import { MobileMenu } from "./mobile-menu";
 import { ModeToggle } from "./mode-toggle";
@@ -14,7 +15,12 @@ export default function Header() {
         <NavItems className="hidden items-center gap-8 lg:flex" />
         <div className="flex items-center gap-3">
           <Button asChild className="hidden lg:inline-flex">
-            <Link href="/contact">Start your project</Link>
+            <Link
+              href="/contact"
+              onClick={() => trackButtonClick("Start your project", "/")}
+            >
+              Start your project
+            </Link>
           </Button>
           <ModeToggle />
           <MobileMenu />

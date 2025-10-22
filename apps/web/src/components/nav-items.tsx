@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { trackNavigationClick } from "@/lib/analytics";
 
 type NavItem = {
   href:
@@ -31,6 +32,12 @@ export function NavItems({
   className = "flex items-center gap-8",
 }: NavItemsProps) {
   const pathname = usePathname();
+
+  const handleNavClick = (item: NavItem) => {
+    trackNavigationClick(item.label, pathname);
+    onItemClick?.();
+  };
+
   return (
     <nav className={className}>
       {navItems.map((item) => (
@@ -38,7 +45,7 @@ export function NavItems({
           className={`font-medium text-sm transition-colors hover:text-foreground/90 ${pathname === item.href ? "text-foreground" : "text-foreground/70"}`}
           href={item.href}
           key={item.href}
-          {...(onItemClick && { onClick: onItemClick })}
+          onClick={() => handleNavClick(item)}
         >
           {item.label}
         </Link>

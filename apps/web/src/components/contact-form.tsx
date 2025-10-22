@@ -1,7 +1,9 @@
 "use client";
 
 import Form from "next/form";
+import { useEffect } from "react";
 import { useContactForm } from "@/hooks/use-contact-form";
+import { trackEvent, trackFormError, trackFormSubmit } from "@/lib/analytics";
 import { ContactFormFields } from "./contact-form-fields";
 import { StatusMessage } from "./status-message";
 
@@ -15,6 +17,31 @@ export default function ContactForm() {
     visionRef,
     handleVisionChange,
   } = useContactForm();
+
+  // Track form interactions
+  useEffect(() => {
+    // Track form start when component mounts
+    trackEvent("contact_form_start", {
+      form_name: "contact_form",
+      page: "/contact",
+    });
+
+    // Track form submission results
+    if (state.status === "success") {
+      trackFormSubmit("contact_form", true, {
+        page: "/contact",
+        form_load_time: formLoadTime,
+        vision_length: visionLength,
+      });
+    } else if (state.status === "error") {
+      trackFormError("contact_form", "submission_error", {
+        page: "/contact",
+        error_message: state.message,
+        form_load_time: formLoadTime,
+        vision_length: visionLength,
+      });
+    }
+  }, [state.status, state.message, formLoadTime, visionLength]);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 sm:p-8">
