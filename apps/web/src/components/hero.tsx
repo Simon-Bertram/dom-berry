@@ -1,12 +1,14 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { useVideoPlayer } from "@/hooks/use-video-player";
 import { getDesktopVideoUrl, getMobileVideoUrl } from "@/lib/video-utils";
 
 type HeroProps = {
   desktopVideoId?: string;
   mobileVideoId?: string;
-  posterUrl?: string;
+  desktopPosterUrl?: string;
+  mobilePosterUrl?: string;
   overlayContent?: React.ReactNode;
   className?: string;
 };
@@ -14,7 +16,8 @@ type HeroProps = {
 export default function Hero({
   desktopVideoId = "282995_tiny_v9w8sa.mp4",
   mobileVideoId = "307864_tiny_p3smba.mp4",
-  posterUrl = "/desktop-static.png",
+  desktopPosterUrl = "desktop-static_vjfngo.png",
+  mobilePosterUrl = "mobile-static_t1ogyd.png",
   overlayContent,
   className = "",
 }: HeroProps) {
@@ -24,6 +27,28 @@ export default function Hero({
   // Generate Cloudinary URLs with optimizations
   const desktopVideoUrl = getDesktopVideoUrl(desktopVideoId);
   const mobileVideoUrl = getMobileVideoUrl(mobileVideoId);
+
+  // Choose the appropriate poster based on viewport size
+  const [posterUrlForDevice, setPosterUrlForDevice] =
+    useState(desktopPosterUrl);
+
+  // Memoize the media query string for clarity
+  const mobileMq = useMemo(() => "(max-width: 768px)", []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const mq = window.matchMedia(mobileMq);
+    const applyMatch = () => {
+      setPosterUrlForDevice(mq.matches ? mobilePosterUrl : desktopPosterUrl);
+    };
+    applyMatch();
+    mq.addEventListener("change", applyMatch);
+    return () => {
+      mq.removeEventListener("change", applyMatch);
+    };
+  }, [desktopPosterUrl, mobilePosterUrl, mobileMq]);
 
   return (
     <section
@@ -40,7 +65,7 @@ export default function Hero({
         onError={handleVideoError}
         onLoadedData={handleVideoLoadedData}
         playsInline
-        poster={posterUrl}
+        poster={posterUrlForDevice}
         preload="auto"
         style={{
           opacity: isVideoLoaded && !hasError ? 1 : 0,
@@ -57,7 +82,7 @@ export default function Hero({
         aria-hidden="true"
         className="absolute top-0 right-0 left-0 h-full w-full bg-center bg-cover bg-no-repeat"
         style={{
-          backgroundImage: `url(${posterUrl})`,
+          backgroundImage: `url(${posterUrlForDevice})`,
           opacity: isVideoLoaded && !hasError ? 0 : 1,
           transition: "opacity 0.5s ease-in-out",
         }}
