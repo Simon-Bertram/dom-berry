@@ -1,6 +1,29 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PortfolioGrid from "@/components/portfolio-grid";
 import { getAllPortfolioProjects, getPortfolioCategories } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title:
+    "Portfolio - Professional Video Production Work in Stroud, Gloucestershire",
+  description:
+    "Explore our portfolio of professional video production work across Stroud, Gloucestershire, and the South West UK. Wedding videos, corporate films, and marketing content.",
+  keywords: [
+    "video production portfolio Stroud",
+    "wedding videography examples Gloucestershire",
+    "corporate video portfolio Bristol",
+    "marketing video examples Bath",
+    "professional filmmaker work South West UK",
+    "video production showcase Gloucestershire",
+  ],
+  openGraph: {
+    title:
+      "Portfolio - Professional Video Production Work in Stroud, Gloucestershire",
+    description:
+      "Explore our portfolio of professional video production work across Stroud, Gloucestershire, and the South West UK. Wedding videos, corporate films, and marketing content.",
+    type: "website",
+  },
+};
 
 export default function PortfolioPage() {
   const projects = getAllPortfolioProjects();
@@ -15,8 +38,9 @@ export default function PortfolioPage() {
             Portfolio
           </h1>
           <p className="mx-auto max-w-3xl font-body text-gray-600 text-xl dark:text-gray-300">
-            Explore our recent work across the Southwest. From corporate films
-            to wedding videos, each project tells a unique story.
+            Explore our recent work across Stroud, Gloucestershire and the South
+            West UK. From corporate films to wedding videos, each project tells
+            a unique story.
           </p>
         </div>
 

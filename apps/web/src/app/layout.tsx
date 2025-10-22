@@ -4,6 +4,13 @@ import "../index.css";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
+import { BUSINESS_INFO } from "@/lib/business-info";
+import {
+  generateJsonLd,
+  localBusinessSchema,
+  organizationSchema,
+  websiteSchema,
+} from "@/lib/structured-data";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-display",
@@ -21,8 +28,63 @@ const sourceSansPro = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "dom-berry",
-  description: "dom-berry",
+  title: {
+    default: `${BUSINESS_INFO.name} - ${BUSINESS_INFO.tagline}`,
+    template: `%s | ${BUSINESS_INFO.name}`,
+  },
+  description: BUSINESS_INFO.description,
+  keywords: [...BUSINESS_INFO.keywords],
+  authors: [{ name: BUSINESS_INFO.name }],
+  creator: BUSINESS_INFO.name,
+  publisher: BUSINESS_INFO.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL(BUSINESS_INFO.contact.website),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: BUSINESS_INFO.contact.website,
+    title: `${BUSINESS_INFO.name} - ${BUSINESS_INFO.tagline}`,
+    description: BUSINESS_INFO.description,
+    siteName: BUSINESS_INFO.name,
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: `${BUSINESS_INFO.name} - Professional Video Production Services`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BUSINESS_INFO.name} - ${BUSINESS_INFO.tagline}`,
+    description: BUSINESS_INFO.description,
+    images: ["/og-image.jpg"],
+    creator: "@domberry",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code", // Replace with actual verification code
+    // yandex: "your-yandex-verification-code",
+    // yahoo: "your-yahoo-verification-code",
+  },
 };
 
 export default function RootLayout({
@@ -31,7 +93,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en-GB" suppressHydrationWarning>
+      <head>
+        {/* Structured Data */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: generateJsonLd(websiteSchema()),
+          }}
+          type="application/ld+json"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: generateJsonLd(organizationSchema()),
+          }}
+          type="application/ld+json"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: generateJsonLd(localBusinessSchema()),
+          }}
+          type="application/ld+json"
+        />
+      </head>
       <body
         className={`${playfairDisplay.variable} ${sourceSansPro.variable} antialiased`}
       >

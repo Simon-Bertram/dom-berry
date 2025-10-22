@@ -1,24 +1,25 @@
 import { ExternalLink } from "lucide-react";
+import { BUSINESS_INFO } from "@/lib/business-info";
 
 const socialLinks = [
   {
     name: "Vimeo",
-    href: "https://vimeo.com/domberry",
+    href: BUSINESS_INFO.social.vimeo,
     icon: "🎬",
   },
   {
     name: "YouTube",
-    href: "https://youtube.com/@domberry",
+    href: BUSINESS_INFO.social.youtube,
     icon: "📺",
   },
   {
     name: "Instagram",
-    href: "https://instagram.com/domberry",
+    href: BUSINESS_INFO.social.instagram,
     icon: "📸",
   },
   {
     name: "LinkedIn",
-    href: "https://linkedin.com/in/domberry",
+    href: BUSINESS_INFO.social.linkedin,
     icon: "💼",
   },
 ];
@@ -43,12 +44,21 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Copyright and Brand */}
           <div className="lg:col-span-2">
-            <h3 className="mb-4 font-semibold text-lg">Dom Berry</h3>
+            <h3 className="mb-4 font-semibold text-lg">{BUSINESS_INFO.name}</h3>
             <p className="mb-4 text-gray-400 text-sm">
-              Professional video production and creative services.
+              {BUSINESS_INFO.description}
             </p>
+            <div className="mb-4 text-gray-400 text-sm">
+              <p className="font-medium text-gray-300">Contact Information:</p>
+              <p>
+                📍 {BUSINESS_INFO.address.street},{" "}
+                {BUSINESS_INFO.address.county}
+              </p>
+              <p>📞 {BUSINESS_INFO.contact.phone}</p>
+              <p>✉️ {BUSINESS_INFO.contact.email}</p>
+            </div>
             <p className="text-gray-500 text-xs">
-              © {currentYear} dom-berry. All rights reserved.
+              © {currentYear} {BUSINESS_INFO.name}. All rights reserved.
             </p>
           </div>
 
@@ -68,6 +78,25 @@ export default function Footer() {
                 </a>
               ))}
             </nav>
+          </div>
+
+          {/* Service Areas */}
+          <div>
+            <h4 className="mb-4 font-semibold text-sm uppercase tracking-wide">
+              Service Areas
+            </h4>
+            <div className="space-y-1">
+              {BUSINESS_INFO.serviceAreas.slice(0, 6).map((area) => (
+                <p className="text-gray-400 text-sm" key={area}>
+                  {area}
+                </p>
+              ))}
+              {BUSINESS_INFO.serviceAreas.length > 6 && (
+                <p className="text-gray-500 text-xs">
+                  +{BUSINESS_INFO.serviceAreas.length - 6} more areas
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Social Media */}

@@ -51,7 +51,7 @@ export default function Home() {
               Dom Berry
             </h1>
             <p className="font-body font-bold text-black/90 text-xl sm:text-3xl">
-              Professional filmmaking services
+              Professional filmmaking services in Stroud, Gloucestershire
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Link
@@ -150,7 +150,7 @@ export default function Home() {
                   <Card className="h-full overflow-hidden" key={project.slug}>
                     <div className="relative aspect-video w-full">
                       <Image
-                        alt={`${project.title} thumbnail`}
+                        alt={`${project.title} - Professional video production project in ${project.location} by Dom Berry, Stroud videographer`}
                         className="object-cover"
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
@@ -204,7 +204,7 @@ export default function Home() {
                   <Card className="h-full overflow-hidden" key={project.slug}>
                     <div className="relative aspect-video w-full">
                       <Image
-                        alt={`${project.title} thumbnail`}
+                        alt={`${project.title} - Professional video production project in ${project.location} by Dom Berry, Stroud videographer`}
                         className="object-cover"
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
