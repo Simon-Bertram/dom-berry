@@ -91,7 +91,7 @@ export default function Hero({
       {/* Overlay Content */}
       {overlayContent && (
         <div className="relative z-10 flex h-full w-full items-center justify-center pt-[72px]">
-          <div className="mx-auto max-w-7xl px-4 text-center text-white">
+          <div className="mx-auto max-w-7xl px-4 text-center text-blue">
             {overlayContent}
           </div>
         </div>
