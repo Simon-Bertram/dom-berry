@@ -14,10 +14,10 @@ export default function HeroWithCTA() {
       className="-mt-[72px] -z-10"
       overlayContent={
         <div className="space-y-6 rounded-lg bg-black/40 p-8">
-          <h1 className="font-bold font-display text-5xl tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="font-bold font-display text-5xl text-white tracking-tight sm:text-6xl lg:text-7xl">
             Dom Berry
           </h1>
-          <p className="font-body font-bold text-xl sm:text-3xl">
+          <p className="font-body font-bold text-white text-xl sm:text-3xl">
             Professional filmmaking services in Stroud, Gloucestershire
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
