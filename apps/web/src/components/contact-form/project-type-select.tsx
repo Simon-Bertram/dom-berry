@@ -1,13 +1,16 @@
 import { ChevronDown, PenTool } from "lucide-react";
-import type { FormState } from "@/hooks/use-contact-form";
 import { PROJECT_TYPES } from "@/hooks/use-contact-form";
+import { useFormContext } from "./form-context";
 import { FormField } from "./form-field";
+import { useFieldA11y } from "./use-field-a11y";
 
-type ProjectTypeSelectProps = {
-  state: FormState;
-};
+export function ProjectTypeSelect() {
+  const { state } = useFormContext();
+  const { ariaAttributes, hasError } = useFieldA11y(
+    "projectType",
+    state.errors.projectType
+  );
 
-export function ProjectTypeSelect({ state }: ProjectTypeSelectProps) {
   return (
     <FormField
       error={state.errors.projectType}
@@ -19,13 +22,9 @@ export function ProjectTypeSelect({ state }: ProjectTypeSelectProps) {
     >
       <div className="relative">
         <select
-          aria-describedby={
-            state.errors.projectType ? "projectType-error" : undefined
-          }
-          aria-invalid={!!state.errors.projectType}
-          aria-required="true"
+          {...ariaAttributes}
           className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
-            state.errors.projectType
+            hasError
               ? "border-red-500 focus:border-red-500"
               : "border-gray-300 focus:border-primary dark:border-gray-600"
           }`}

@@ -1,4 +1,5 @@
 import { useActionState, useEffect, useRef, useState } from "react";
+import type { FormState } from "@/components/contact-form/types";
 import { submitContactForm } from "@/lib/contact-actions";
 
 // Constants moved to separate file for better organization
@@ -17,15 +18,6 @@ export const BUDGET_RANGES = [
   "£2k - £5k",
   "£5k+",
 ] as const;
-
-export type FormStatus = "idle" | "loading" | "success" | "error";
-export type FormErrors = Record<string, string>;
-
-export type FormState = {
-  status: FormStatus;
-  message: string;
-  errors: FormErrors;
-};
 
 const initialState: FormState = {
   status: "idle",

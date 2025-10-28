@@ -1,13 +1,16 @@
 import { ChevronDown, PoundSterling } from "lucide-react";
-import type { FormState } from "@/hooks/use-contact-form";
 import { BUDGET_RANGES } from "@/hooks/use-contact-form";
+import { useFormContext } from "./form-context";
 import { FormField } from "./form-field";
+import { useFieldA11y } from "./use-field-a11y";
 
-type BudgetSelectProps = {
-  state: FormState;
-};
+export function BudgetSelect() {
+  const { state } = useFormContext();
+  const { ariaAttributes, hasError } = useFieldA11y(
+    "projectBudget",
+    state.errors.projectBudget
+  );
 
-export function BudgetSelect({ state }: BudgetSelectProps) {
   return (
     <FormField
       error={state.errors.projectBudget}
@@ -22,13 +25,9 @@ export function BudgetSelect({ state }: BudgetSelectProps) {
     >
       <div className="relative">
         <select
-          aria-describedby={
-            state.errors.projectBudget ? "projectBudget-error" : undefined
-          }
-          aria-invalid={!!state.errors.projectBudget}
-          aria-required="true"
+          {...ariaAttributes}
           className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
-            state.errors.projectBudget
+            hasError
               ? "border-red-500 focus:border-red-500"
               : "border-gray-300 focus:border-primary dark:border-gray-600"
           }`}

@@ -1,10 +1,11 @@
-import type { FormState } from "@/hooks/use-contact-form";
 import { BudgetSelect } from "./budget-select";
 import { EmailField } from "./email-field";
+import { FormProvider } from "./form-context";
 import { FormHoneypots } from "./form-honeypots";
 import { FormSecurityFields } from "./form-security-fields";
 import { NameField } from "./name-field";
 import { ProjectTypeSelect } from "./project-type-select";
+import type { FormState } from "./types";
 import { VisionField } from "./vision-field";
 
 type ContactFormFieldsProps = {
@@ -22,27 +23,30 @@ export function ContactFormFields({
   visionRef,
   onVisionChange,
 }: ContactFormFieldsProps) {
+  const formContextValue = {
+    state,
+    visionLength,
+    formLoadTime,
+    visionRef,
+    onVisionChange,
+  };
+
   return (
-    <>
+    <FormProvider value={formContextValue}>
       {/* Bot detection fields */}
       <FormHoneypots />
       <FormSecurityFields formLoadTime={formLoadTime} />
 
       {/* Form Fields Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <NameField state={state} />
-        <EmailField state={state} />
-        <ProjectTypeSelect state={state} />
-        <BudgetSelect state={state} />
+        <NameField />
+        <EmailField />
+        <ProjectTypeSelect />
+        <BudgetSelect />
       </div>
 
       {/* Vision field spans full width */}
-      <VisionField
-        onVisionChange={onVisionChange}
-        state={state}
-        visionLength={visionLength}
-        visionRef={visionRef}
-      />
-    </>
+      <VisionField />
+    </FormProvider>
   );
 }

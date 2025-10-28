@@ -3,20 +3,15 @@
  * Includes timestamp and random token generation
  */
 
-// Constants for random token generation
-const RANDOM_TOKEN_START = 2;
-const RANDOM_TOKEN_LENGTH = 13;
-const RADIX_36 = 36;
+import { generateRandomToken } from "./constants";
 
 type FormSecurityFieldsProps = {
   formLoadTime: number;
 };
 
 export function FormSecurityFields({ formLoadTime }: FormSecurityFieldsProps) {
-  // Generate random token for additional bot detection
-  const randomToken = Math.random()
-    .toString(RADIX_36)
-    .substring(RANDOM_TOKEN_START, RANDOM_TOKEN_LENGTH);
+  // Generate random token for additional bot detection using pure function
+  const randomToken = generateRandomToken();
 
   return (
     <>

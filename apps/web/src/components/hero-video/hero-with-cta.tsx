@@ -38,6 +38,8 @@ export default function HeroWithCTA() {
           </div>
         </div>
       }
+      posterId="capcutreel-static_k13vdk"
+      videoId="capcutreel_v0suld"
     />
   );
 }

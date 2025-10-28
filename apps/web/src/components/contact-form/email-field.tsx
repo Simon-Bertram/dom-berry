@@ -1,12 +1,16 @@
 import { Mail } from "lucide-react";
-import type { FormState } from "@/hooks/use-contact-form";
+import { FORM_VALIDATION_CONSTANTS } from "./constants";
+import { useFormContext } from "./form-context";
 import { FormField } from "./form-field";
+import { useFieldA11y } from "./use-field-a11y";
 
-type EmailFieldProps = {
-  state: FormState;
-};
+export function EmailField() {
+  const { state } = useFormContext();
+  const { ariaAttributes, hasError } = useFieldA11y(
+    "email",
+    state.errors.email
+  );
 
-export function EmailField({ state }: EmailFieldProps) {
   return (
     <FormField
       error={state.errors.email}
@@ -15,16 +19,14 @@ export function EmailField({ state }: EmailFieldProps) {
       label="Email Address"
     >
       <input
-        aria-describedby={state.errors.email ? "email-error" : undefined}
-        aria-invalid={!!state.errors.email}
-        aria-required="true"
+        {...ariaAttributes}
         className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
-          state.errors.email
+          hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300 focus:border-primary dark:border-gray-600"
         }`}
         id="email"
-        maxLength={254}
+        maxLength={FORM_VALIDATION_CONSTANTS.EMAIL_MAX_LENGTH}
         name="email"
         required
         type="email"

@@ -1,91 +1,42 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useVideoPlayer } from "@/hooks/use-video-player";
-import { getDesktopVideoUrl, getMobileVideoUrl } from "@/lib/video-utils";
+import { CldVideoPlayer } from "next-cloudinary";
 
 type HeroProps = {
-  desktopVideoId?: string;
-  mobileVideoId?: string;
-  desktopPosterUrl?: string;
-  mobilePosterUrl?: string;
+  videoId?: string;
+  posterId?: string;
   overlayContent?: React.ReactNode;
   className?: string;
 };
 
 export default function Hero({
-  desktopVideoId = "capcutreel_v0suld.mp4",
-  mobileVideoId = "capcutreel_v0suld.mp4",
-  desktopPosterUrl = "https://res.cloudinary.com/dulwhlyqt/image/upload/v1761640239/capcutreel-static_k13vdk.jpg",
-  mobilePosterUrl = "https://res.cloudinary.com/dulwhlyqt/image/upload/v1761640239/capcutreel-static_k13vdk.jpg",
+  videoId = "capcutreel_v0suld",
+  posterId = "capcutreel-static_k13vdk",
   overlayContent,
   className = "",
 }: HeroProps) {
-  const { isVideoLoaded, hasError, handleVideoLoadedData, handleVideoError } =
-    useVideoPlayer();
-
-  // Generate Cloudinary URLs with optimizations
-  const desktopVideoUrl = getDesktopVideoUrl(desktopVideoId);
-  const mobileVideoUrl = getMobileVideoUrl(mobileVideoId);
-
-  // Choose the appropriate poster based on viewport size
-  const [posterUrlForDevice, setPosterUrlForDevice] =
-    useState(desktopPosterUrl);
-
-  // Memoize the media query string for clarity
-  const mobileMq = useMemo(() => "(max-width: 768px)", []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const mq = window.matchMedia(mobileMq);
-    const applyMatch = () => {
-      setPosterUrlForDevice(mq.matches ? mobilePosterUrl : desktopPosterUrl);
-    };
-    applyMatch();
-    mq.addEventListener("change", applyMatch);
-    return () => {
-      mq.removeEventListener("change", applyMatch);
-    };
-  }, [desktopPosterUrl, mobilePosterUrl, mobileMq]);
-
   return (
     <section
       aria-label="Hero video section"
       className={`hero-section -z-50 h-[100vh] w-full overflow-hidden ${className}`}
     >
-      {/* Video Element - Always present to prevent CLS */}
-      <video
-        aria-label="Hero background video"
-        autoPlay
+      {/* Cloudinary Video Player */}
+      <CldVideoPlayer
+        autoPlay={true}
         className="absolute top-0 right-0 left-0 h-full w-full object-cover"
-        loop
-        muted
-        onError={handleVideoError}
-        onLoadedData={handleVideoLoadedData}
-        playsInline
-        poster={posterUrlForDevice}
-        preload="auto"
-        style={{
-          opacity: isVideoLoaded && !hasError ? 1 : 0,
-          transition: "opacity 0.5s ease-in-out",
+        controls={false}
+        height="1080"
+        loop={true}
+        muted={true}
+        playsinline={true}
+        poster={posterId}
+        sourceTypes={["hls", "dash", "mp4"]}
+        src={videoId}
+        transformation={{
+          streaming_profile: "hd",
+          quality: "auto:low",
         }}
-      >
-        <source media="(max-width: 768px)" src={mobileVideoUrl} />
-        <source src={desktopVideoUrl} />
-        Your browser does not support the video tag.
-      </video>
-
-      {/* Poster Image Fallback - Always present to prevent CLS */}
-      <div
-        aria-hidden="true"
-        className="absolute top-0 right-0 left-0 h-full w-full bg-center bg-cover bg-no-repeat"
-        style={{
-          backgroundImage: `url(${posterUrlForDevice})`,
-          opacity: isVideoLoaded && !hasError ? 0 : 1,
-          transition: "opacity 0.5s ease-in-out",
-        }}
+        width="1920"
       />
 
       {/* Overlay Content */}

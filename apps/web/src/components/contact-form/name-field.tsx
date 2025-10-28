@@ -1,12 +1,13 @@
 import { User } from "lucide-react";
-import type { FormState } from "@/hooks/use-contact-form";
+import { FORM_VALIDATION_CONSTANTS } from "./constants";
+import { useFormContext } from "./form-context";
 import { FormField } from "./form-field";
+import { useFieldA11y } from "./use-field-a11y";
 
-type NameFieldProps = {
-  state: FormState;
-};
+export function NameField() {
+  const { state } = useFormContext();
+  const { ariaAttributes, hasError } = useFieldA11y("name", state.errors.name);
 
-export function NameField({ state }: NameFieldProps) {
   return (
     <FormField
       error={state.errors.name}
@@ -15,16 +16,14 @@ export function NameField({ state }: NameFieldProps) {
       label="Your Name"
     >
       <input
-        aria-describedby={state.errors.name ? "name-error" : undefined}
-        aria-invalid={!!state.errors.name}
-        aria-required="true"
+        {...ariaAttributes}
         className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
-          state.errors.name
+          hasError
             ? "border-red-500 focus:border-red-500"
             : "border-gray-300 focus:border-primary dark:border-gray-600"
         }`}
         id="name"
-        maxLength={100}
+        maxLength={FORM_VALIDATION_CONSTANTS.NAME_MAX_LENGTH}
         name="name"
         required
         type="text"
