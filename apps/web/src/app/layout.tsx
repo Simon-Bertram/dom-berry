@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 import "../index.css";
+import { Analytics } from "@vercel/analytics/next";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
@@ -116,6 +117,7 @@ export default function RootLayout({
           <main id="main-content">{children}</main>
           <Footer />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
