@@ -81,9 +81,16 @@ export const metadata: Metadata = {
     },
   },
   verification: {
+    // TODO: Add actual verification codes from search engines
+    // 1. Google Search Console: Settings → Ownership verification → HTML tag method
+    // 2. Bing Webmaster Tools: Settings → Verify ownership → Meta tag method
+    // 3. Yandex Webmaster: Site settings → Verification → Meta tag method
+    // 4. Yahoo Site Explorer: Similar verification process
+    // Consider using environment variables for security: process.env.GOOGLE_VERIFICATION_CODE
     google: "your-google-verification-code", // Replace with actual verification code
     // yandex: "your-yandex-verification-code",
     // yahoo: "your-yahoo-verification-code",
+    // bing: "your-bing-verification-code",
   },
 };
 
