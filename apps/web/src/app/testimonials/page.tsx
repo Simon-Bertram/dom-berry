@@ -133,7 +133,7 @@ export default function TestimonialsPage() {
                     </p>
 
                     {testimonial.featured && (
-                      <Badge className="mt-2 mt-4 bg-indigo-600 dark:bg-primary">
+                      <Badge className="mt-4 bg-indigo-600 dark:bg-primary">
                         Featured Client
                       </Badge>
                     )}

@@ -1,15 +1,18 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import { getRandomDelay } from "@/lib/phone-protection";
+import { useCallback, useMemo } from "react";
 import {
   ADVANCED_MAX_DELAY,
   ADVANCED_MIN_DELAY,
   DIGIT_REGEX,
-  LOADING_TEXT,
-  REVEAL_TEXT,
-} from "./constants";
+} from "./phone-protection.constants";
+import {
+  getDisplayText,
+  getPhoneButtonAriaLabel,
+  getPhoneScreenReaderId,
+} from "./phone-protection.utils";
 import type { ProtectedPhoneProps } from "./types";
+import { useDelayedReveal } from "./use-delayed-reveal";
 
 /**
  * Alternative implementation using a more complex obfuscation method
@@ -20,8 +23,10 @@ export function AdvancedProtectedPhone({
   className = "text-indigo-600 hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-700",
   showIcon = true,
 }: ProtectedPhoneProps) {
-  const [isRevealed, setIsRevealed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isRevealed, isLoading, handleReveal } = useDelayedReveal(
+    ADVANCED_MIN_DELAY,
+    ADVANCED_MAX_DELAY
+  );
 
   // More complex obfuscation - store phone as encoded parts
   const obfuscatedParts = useMemo(
@@ -56,21 +61,6 @@ export function AdvancedProtectedPhone({
     [obfuscatedParts]
   );
 
-  const handleReveal = useCallback(async () => {
-    if (isRevealed || isLoading) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Simulate processing time
-    const delay = getRandomDelay(ADVANCED_MIN_DELAY, ADVANCED_MAX_DELAY);
-    await new Promise((resolve) => setTimeout(resolve, delay));
-
-    setIsRevealed(true);
-    setIsLoading(false);
-  }, [isRevealed, isLoading]);
-
   const handleClick = useCallback(() => {
     if (isRevealed) {
       const actualPhone = deobfuscatePhone();
@@ -79,16 +69,6 @@ export function AdvancedProtectedPhone({
       handleReveal();
     }
   }, [isRevealed, deobfuscatePhone, handleReveal]);
-
-  const getDisplayText = () => {
-    if (isLoading) {
-      return LOADING_TEXT;
-    }
-    if (isRevealed) {
-      return deobfuscatePhone();
-    }
-    return REVEAL_TEXT;
-  };
 
   return (
     <div className="flex items-center gap-3">
@@ -100,10 +80,8 @@ export function AdvancedProtectedPhone({
       <div>
         <p className="font-medium text-gray-900 dark:text-gray-100">Phone</p>
         <button
-          aria-describedby="phone-number-sr-advanced"
-          aria-label={
-            isRevealed ? `Call ${deobfuscatePhone()}` : "Reveal phone number"
-          }
+          aria-describedby={getPhoneScreenReaderId("advanced")}
+          aria-label={getPhoneButtonAriaLabel(isRevealed, deobfuscatePhone())}
           className={`cursor-pointer transition-colors duration-200 ${className} ${
             isLoading ? "cursor-wait opacity-50" : ""
           }`}
@@ -111,9 +89,9 @@ export function AdvancedProtectedPhone({
           onClick={handleClick}
           type="button"
         >
-          {getDisplayText()}
+          {getDisplayText(isLoading, isRevealed, deobfuscatePhone())}
         </button>
-        <span className="sr-only" id="phone-number-sr-advanced">
+        <span className="sr-only" id={getPhoneScreenReaderId("advanced")}>
           Phone number: {deobfuscatePhone()}
         </span>
       </div>

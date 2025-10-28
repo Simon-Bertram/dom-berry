@@ -1,10 +1,18 @@
-// Constants for better maintainability
-export const LOADING_TEXT = "Loading...";
-export const REVEAL_TEXT = "Click to reveal phone number";
-export const MIN_DELAY = 200;
-export const MAX_DELAY = 800;
-export const ADVANCED_MIN_DELAY = 300;
-export const ADVANCED_MAX_DELAY = 1000;
+// Re-export constants from the new constants file for backward compatibility
+import {
+  ADVANCED_MAX_DELAY as ADVANCED_MAX_DELAY_CONST,
+  ADVANCED_MIN_DELAY as ADVANCED_MIN_DELAY_CONST,
+  DIGIT_REGEX as DIGIT_REGEX_CONST,
+  LOADING_TEXT as LOADING_TEXT_CONST,
+  MAX_DELAY as MAX_DELAY_CONST,
+  MIN_DELAY as MIN_DELAY_CONST,
+  REVEAL_TEXT as REVEAL_TEXT_CONST,
+} from "./phone-protection.constants";
 
-// Regex for digit detection
-export const DIGIT_REGEX = /\d/;
+export const LOADING_TEXT = LOADING_TEXT_CONST;
+export const REVEAL_TEXT = REVEAL_TEXT_CONST;
+export const MIN_DELAY = MIN_DELAY_CONST;
+export const MAX_DELAY = MAX_DELAY_CONST;
+export const ADVANCED_MIN_DELAY = ADVANCED_MIN_DELAY_CONST;
+export const ADVANCED_MAX_DELAY = ADVANCED_MAX_DELAY_CONST;
+export const DIGIT_REGEX = DIGIT_REGEX_CONST;

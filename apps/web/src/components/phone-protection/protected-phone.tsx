@@ -1,13 +1,18 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import {
-  getRandomDelay,
   reconstructPhoneNumber,
   splitPhoneNumber,
 } from "@/lib/phone-protection";
-import { LOADING_TEXT, MAX_DELAY, MIN_DELAY, REVEAL_TEXT } from "./constants";
+import { MAX_DELAY, MIN_DELAY } from "./phone-protection.constants";
+import {
+  getDisplayText,
+  getPhoneButtonAriaLabel,
+  getPhoneScreenReaderId,
+} from "./phone-protection.utils";
 import type { ProtectedPhoneProps } from "./types";
+import { useDelayedReveal } from "./use-delayed-reveal";
 
 /**
  * ProtectedPhone component with multiple layers of anti-harvesting protection
@@ -24,8 +29,10 @@ export function ProtectedPhone({
   className = "text-indigo-600 hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-700",
   showIcon = true,
 }: ProtectedPhoneProps) {
-  const [isRevealed, setIsRevealed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isRevealed, isLoading, handleReveal } = useDelayedReveal(
+    MIN_DELAY,
+    MAX_DELAY
+  );
 
   // Split the phone number into parts for obfuscation
   const phoneParts = useMemo(() => splitPhoneNumber(phone), [phone]);
@@ -33,21 +40,6 @@ export function ProtectedPhone({
     () => reconstructPhoneNumber(phoneParts),
     [phoneParts]
   );
-
-  const handleReveal = useCallback(async () => {
-    if (isRevealed || isLoading) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Add random delay to prevent automated clicking
-    const delay = getRandomDelay(MIN_DELAY, MAX_DELAY);
-    await new Promise((resolve) => setTimeout(resolve, delay));
-
-    setIsRevealed(true);
-    setIsLoading(false);
-  }, [isRevealed, isLoading]);
 
   const handleMouseEnter = useCallback(() => {
     if (isRevealed || isLoading) {
@@ -65,16 +57,6 @@ export function ProtectedPhone({
     }
   }, [isRevealed, fullPhone, handleReveal]);
 
-  const getDisplayText = () => {
-    if (isLoading) {
-      return LOADING_TEXT;
-    }
-    if (isRevealed) {
-      return fullPhone;
-    }
-    return REVEAL_TEXT;
-  };
-
   return (
     <div className="flex items-center gap-3">
       {showIcon && (
@@ -85,8 +67,8 @@ export function ProtectedPhone({
       <div>
         <p className="font-medium text-gray-900 dark:text-gray-100">Phone</p>
         <button
-          aria-describedby="phone-number-sr"
-          aria-label={isRevealed ? `Call ${fullPhone}` : "Reveal phone number"}
+          aria-describedby={getPhoneScreenReaderId("basic")}
+          aria-label={getPhoneButtonAriaLabel(isRevealed, fullPhone)}
           className={`cursor-pointer transition-colors duration-200 ${className} ${
             isLoading ? "cursor-wait opacity-50" : ""
           }`}
@@ -96,10 +78,10 @@ export function ProtectedPhone({
           // Hidden span for screen readers with the actual phone number
           type="button"
         >
-          {getDisplayText()}
+          {getDisplayText(isLoading, isRevealed, fullPhone)}
         </button>
         {/* Screen reader accessible phone number */}
-        <span className="sr-only" id="phone-number-sr">
+        <span className="sr-only" id={getPhoneScreenReaderId("basic")}>
           Phone number: {fullPhone}
         </span>
       </div>
