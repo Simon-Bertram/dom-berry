@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, DollarSign, Film } from "lucide-react";
+import { CheckCircle, Clock, Film, PoundSterling } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -54,7 +54,7 @@ export function ServicesGrid({ services }: ServicesGridProps) {
 
             <div className="mt-auto space-y-3">
               <div className="flex items-center gap-2 text-gray-600 text-sm dark:text-gray-300">
-                <DollarSign className="h-4 w-4" />
+                <PoundSterling className="h-4 w-4" />
                 <span>Starting from {service.startingPrice}</span>
               </div>
 

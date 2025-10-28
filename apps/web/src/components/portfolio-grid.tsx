@@ -38,7 +38,7 @@ export default function PortfolioGrid({
         <Badge
           className={`cursor-pointer px-4 py-2 transition-colors ${
             activeCategory === "All Projects"
-              ? "bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+              ? "bg-primary text-black hover:bg-primary/80 dark:bg-primary dark:hover:bg-primary/80"
               : "hover:bg-gray-100 dark:hover:bg-gray-800"
           }`}
           onClick={() => setActiveCategory("All Projects")}
@@ -50,7 +50,7 @@ export default function PortfolioGrid({
           <Badge
             className={`cursor-pointer px-4 py-2 transition-colors ${
               activeCategory === category
-                ? "bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+                ? "bg-primary text-black hover:bg-primary/80 dark:bg-primary dark:hover:bg-primary/80"
                 : "hover:bg-gray-100 dark:hover:bg-gray-800"
             }`}
             key={category}
@@ -67,7 +67,7 @@ export default function PortfolioGrid({
         <p className="text-gray-600 dark:text-gray-300">
           Showing {filteredProjects.length} of {projects.length} projects
           {activeCategory !== "All Projects" && (
-            <span className="ml-2 text-indigo-600 dark:text-indigo-400">
+            <span className="ml-2 text-primary dark:text-primary">
               in {activeCategory}
             </span>
           )}
@@ -105,7 +105,7 @@ export default function PortfolioGrid({
                     src={project.image}
                   />
                   {project.featured && (
-                    <Badge className="absolute top-2 right-2 bg-indigo-600 text-white dark:bg-indigo-500 dark:text-white">
+                    <Badge className="absolute top-2 right-2 bg-primary text-black dark:bg-primary dark:text-black">
                       Featured
                     </Badge>
                   )}
@@ -133,7 +133,7 @@ export default function PortfolioGrid({
                     <span>Budget: {project.budget}</span>
                   </div>
 
-                  <div className="inline-flex items-center font-medium text-indigo-600 dark:text-indigo-400">
+                  <div className="inline-flex items-center font-medium text-indigo-600 dark:text-primary">
                     View Project Details
                     <svg
                       className="ml-1 h-4 w-4"

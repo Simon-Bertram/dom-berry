@@ -35,8 +35,8 @@ export function ProcessSection() {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         {processSteps.map((step) => (
           <div className="text-center" key={step.number}>
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900">
-              <span className="font-bold text-2xl text-indigo-600 dark:text-indigo-200">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 dark:bg-primary">
+              <span className="font-bold text-2xl text-indigo-600 dark:text-indigo-600">
                 {step.number}
               </span>
             </div>

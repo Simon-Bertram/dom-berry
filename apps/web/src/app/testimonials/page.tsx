@@ -39,21 +39,17 @@ export default function TestimonialsPage() {
     <>
       {/* Review Schema for each testimonial */}
       {testimonials.map((testimonial) => (
-        <script
-          dangerouslySetInnerHTML={{
-            __html: generateJsonLd(
-              reviewSchema({
-                name: testimonial.name,
-                role: testimonial.role,
-                company: testimonial.company,
-                content: testimonial.content,
-                rating: testimonial.rating,
-              })
-            ),
-          }}
-          key={testimonial.slug}
-          type="application/ld+json"
-        />
+        <script key={testimonial.slug} type="application/ld+json">
+          {generateJsonLd(
+            reviewSchema({
+              name: testimonial.name,
+              role: testimonial.role,
+              company: testimonial.company,
+              content: testimonial.content,
+              rating: testimonial.rating,
+            })
+          )}
+        </script>
       ))}
       <div className="min-h-screen bg-gray-50 py-12 dark:bg-gray-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -129,15 +125,15 @@ export default function TestimonialsPage() {
                     <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                       {testimonial.name}
                     </h3>
-                    <p className="text-gray-600 text-sm dark:text-gray-400">
+                    <p className="mb-4 text-gray-600 text-sm dark:text-gray-400">
                       {testimonial.role}
                     </p>
-                    <p className="font-medium text-indigo-600 text-sm dark:text-indigo-400">
+                    <p className="font-medium text-indigo-600 text-sm dark:text-indigo-600">
                       {testimonial.company}
                     </p>
 
                     {testimonial.featured && (
-                      <Badge className="mt-2 bg-indigo-600 dark:bg-indigo-500">
+                      <Badge className="mt-2 mt-4 bg-indigo-600 dark:bg-primary">
                         Featured Client
                       </Badge>
                     )}
@@ -162,7 +158,7 @@ export default function TestimonialsPage() {
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
               <div className="text-center">
-                <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
+                <div className="mb-2 font-bold text-4xl text-primary dark:text-primary">
                   50+
                 </div>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -171,7 +167,7 @@ export default function TestimonialsPage() {
               </div>
 
               <div className="text-center">
-                <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
+                <div className="mb-2 font-bold text-4xl text-primary dark:text-primary">
                   100%
                 </div>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -180,7 +176,7 @@ export default function TestimonialsPage() {
               </div>
 
               <div className="text-center">
-                <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
+                <div className="mb-2 font-bold text-4xl text-primary dark:text-primary">
                   5.0
                 </div>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -189,7 +185,7 @@ export default function TestimonialsPage() {
               </div>
 
               <div className="text-center">
-                <div className="mb-2 font-bold text-4xl text-indigo-600 dark:text-indigo-400">
+                <div className="mb-2 font-bold text-4xl text-primary dark:text-primary">
                   3
                 </div>
                 <p className="text-gray-600 dark:text-gray-300">
