@@ -4,8 +4,8 @@ import Form from "next/form";
 import { useEffect } from "react";
 import { useContactForm } from "@/hooks/use-contact-form";
 import { trackEvent, trackFormError, trackFormSubmit } from "@/lib/analytics";
+import { StatusMessage } from "../status-message";
 import { ContactFormFields } from "./contact-form-fields";
-import { StatusMessage } from "./status-message";
 
 export default function ContactForm() {
   const {

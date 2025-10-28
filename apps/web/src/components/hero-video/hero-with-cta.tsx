@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Hero from "@/components/hero";
+import Hero from "@/components/hero-video/hero";
 import { trackButtonClick } from "@/lib/analytics";
 
 export default function HeroWithCTA() {

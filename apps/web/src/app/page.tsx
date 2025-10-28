@@ -1,4 +1,4 @@
-import HeroWithCTA from "@/components/hero-with-cta";
+import HeroWithCTA from "@/components/hero-video/hero-with-cta";
 import HomePageContent from "@/components/home-page-content";
 import { getAllPortfolioProjects, getAllTestimonials } from "@/lib/content";
 
