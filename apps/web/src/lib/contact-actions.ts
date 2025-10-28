@@ -26,7 +26,10 @@ type ContactFormData = {
   projectBudget: string;
   vision: string;
   website?: string | undefined; // Honeypot field
+  phone?: string | undefined; // Additional honeypot field
+  company?: string | undefined; // Additional honeypot field
   formTimestamp?: string | undefined; // Timestamp for bot detection
+  formToken?: string | undefined; // Random token for bot detection
 };
 
 type FormStatus = "idle" | "loading" | "success" | "error";
@@ -109,7 +112,10 @@ function extractAndSanitizeFormData(formData: FormData): ContactFormData {
     projectBudget: getStringValue("projectBudget"),
     vision: getStringValue("vision"),
     website: getOptionalStringValue("website"), // Honeypot field
+    phone: getOptionalStringValue("phone"), // Additional honeypot field
+    company: getOptionalStringValue("company"), // Additional honeypot field
     formTimestamp: getOptionalStringValue("formTimestamp"), // Timestamp for bot detection
+    formToken: getOptionalStringValue("formToken"), // Random token for bot detection
   };
 }
 
@@ -216,6 +222,34 @@ export async function submitContactForm(
         status: "error",
         message: "Please correct the errors below and try again.",
         errors: fieldErrors,
+      };
+    }
+
+    // Check for honeypot fields (bots often fill these)
+    if (data.website && data.website.trim() !== "") {
+      logFormSubmission(data, false, "Honeypot field 'website' filled");
+      return {
+        status: "error",
+        message: "Invalid form submission detected.",
+        errors: {},
+      };
+    }
+
+    if (data.phone && data.phone.trim() !== "") {
+      logFormSubmission(data, false, "Honeypot field 'phone' filled");
+      return {
+        status: "error",
+        message: "Invalid form submission detected.",
+        errors: {},
+      };
+    }
+
+    if (data.company && data.company.trim() !== "") {
+      logFormSubmission(data, false, "Honeypot field 'company' filled");
+      return {
+        status: "error",
+        message: "Invalid form submission detected.",
+        errors: {},
       };
     }
 

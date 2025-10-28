@@ -10,6 +10,11 @@ import type { FormState } from "@/hooks/use-contact-form";
 import { BUDGET_RANGES, PROJECT_TYPES } from "@/hooks/use-contact-form";
 import { FormField } from "./form-field";
 
+// Constants for random token generation
+const RANDOM_TOKEN_START = 2;
+const RANDOM_TOKEN_LENGTH = 13;
+const RADIX_36 = 36;
+
 type ContactFormFieldsProps = {
   state: FormState;
   visionLength: number;
@@ -43,8 +48,48 @@ export function ContactFormFields({
         type="text"
       />
 
+      {/* Additional honeypot fields for better bot detection */}
+      <input
+        aria-hidden="true"
+        autoComplete="off"
+        name="phone"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: "1px",
+          height: "1px",
+          opacity: 0,
+        }}
+        tabIndex={-1}
+        type="text"
+      />
+
+      <input
+        aria-hidden="true"
+        autoComplete="off"
+        name="company"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: "1px",
+          height: "1px",
+          opacity: 0,
+        }}
+        tabIndex={-1}
+        type="text"
+      />
+
       {/* Timestamp field for bot detection */}
       <input name="formTimestamp" type="hidden" value={formLoadTime} />
+
+      {/* Random token for additional bot detection */}
+      <input
+        name="formToken"
+        type="hidden"
+        value={Math.random()
+          .toString(RADIX_36)
+          .substring(RANDOM_TOKEN_START, RANDOM_TOKEN_LENGTH)}
+      />
 
       {/* Form Fields Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

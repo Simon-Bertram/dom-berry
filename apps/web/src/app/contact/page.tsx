@@ -86,12 +86,28 @@ export default function ContactPage() {
                       <p className="font-medium text-gray-900 dark:text-gray-100">
                         Email
                       </p>
-                      <a
-                        className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-700"
-                        href={`mailto:${BUSINESS_INFO.contact.email}`}
+                      <button
+                        className="cursor-pointer text-indigo-600 hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-700"
+                        onClick={() => {
+                          const email = "hello@domberry.co.uk";
+                          window.location.href = `mailto:${email}`;
+                        }}
+                        onMouseEnter={(e) => {
+                          const target = e.target as HTMLButtonElement;
+                          if (target.textContent === "Click to reveal email") {
+                            target.textContent = "hello@domberry.co.uk";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          const target = e.target as HTMLButtonElement;
+                          if (target.textContent === "hello@domberry.co.uk") {
+                            target.textContent = "Click to reveal email";
+                          }
+                        }}
+                        type="button"
                       >
-                        {BUSINESS_INFO.contact.email}
-                      </a>
+                        Click to reveal email
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import { EmailProtection } from "@/components/email-protection";
 import { BUSINESS_INFO } from "@/lib/business-info";
 
 const socialLinks = [
@@ -61,7 +62,9 @@ export default function Footer() {
                 {BUSINESS_INFO.address.county}
               </p>
               <p className="mb-1">📞 {BUSINESS_INFO.contact.phone}</p>
-              <p>✉️ {BUSINESS_INFO.contact.email}</p>
+              <p>
+                ✉️ <EmailProtection email={BUSINESS_INFO.contact.email} />
+              </p>
             </div>
             <p className="text-gray-300 text-xs">
               © {currentYear} {BUSINESS_INFO.name}. All rights reserved.
