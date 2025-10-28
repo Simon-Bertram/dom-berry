@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/contact-form/contact-form";
 import { EmailProtection } from "@/components/email-protection";
-import { ProtectedPhone } from "@/components/phone-protection";
+import { ProtectedPhone } from "@/components/phone-protection/protected-phone";
 import { BUSINESS_INFO } from "@/lib/business-info";
 
 export const metadata: Metadata = {
