@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/contact-form/contact-form";
+import { EmailProtection } from "@/components/email-protection";
+import { ProtectedPhone } from "@/components/phone-protection";
 import { BUSINESS_INFO } from "@/lib/business-info";
 
 export const metadata: Metadata = {
@@ -65,20 +67,10 @@ export default function ContactPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl dark:text-primary">📞</span>
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-gray-100">
-                        Phone
-                      </p>
-                      <a
-                        className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-700"
-                        href={`tel:${BUSINESS_INFO.contact.phone}`}
-                      >
-                        {BUSINESS_INFO.contact.phone}
-                      </a>
-                    </div>
-                  </div>
+                  <ProtectedPhone
+                    phone={BUSINESS_INFO.contact.phone}
+                    showIcon={true}
+                  />
 
                   <div className="flex items-center gap-3">
                     <span className="text-xl dark:text-primary">✉️</span>
@@ -86,28 +78,10 @@ export default function ContactPage() {
                       <p className="font-medium text-gray-900 dark:text-gray-100">
                         Email
                       </p>
-                      <button
+                      <EmailProtection
                         className="cursor-pointer text-indigo-600 hover:text-indigo-700 dark:text-indigo-600 dark:hover:text-indigo-700"
-                        onClick={() => {
-                          const email = "hello@domberry.co.uk";
-                          window.location.href = `mailto:${email}`;
-                        }}
-                        onMouseEnter={(e) => {
-                          const target = e.target as HTMLButtonElement;
-                          if (target.textContent === "Click to reveal email") {
-                            target.textContent = "hello@domberry.co.uk";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          const target = e.target as HTMLButtonElement;
-                          if (target.textContent === "hello@domberry.co.uk") {
-                            target.textContent = "Click to reveal email";
-                          }
-                        }}
-                        type="button"
-                      >
-                        Click to reveal email
-                      </button>
+                        email={BUSINESS_INFO.contact.email}
+                      />
                     </div>
                   </div>
                 </div>
