@@ -29,10 +29,10 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-          {/* Contact Information */}
-          <div className="space-y-8">
+      <div className="container mx-auto px-4 py-18">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-5">
+          {/* Contact Information - 40% width (2/5 columns) */}
+          <div className="space-y-8 lg:col-span-2">
             <div>
               <h1 className="mb-4 font-bold font-display text-4xl text-gray-900 dark:text-gray-100">
                 Get In Touch
@@ -109,8 +109,8 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Contact Form */}
-          <div className="flex items-start">
+          {/* Contact Form - 60% width (3/5 columns) */}
+          <div className="flex items-start lg:col-span-3">
             <ContactForm />
           </div>
         </div>

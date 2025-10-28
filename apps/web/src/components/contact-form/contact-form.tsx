@@ -44,48 +44,46 @@ export default function ContactForm() {
   }, [state.status, state.message, formLoadTime, visionLength]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 sm:p-8">
-      <div className="w-full max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-2xl sm:p-10 dark:border-gray-700 dark:bg-gray-800">
-        <h1 className="mb-2 font-display font-extrabold text-3xl text-gray-900 dark:text-gray-100">
-          Start Your Project
-        </h1>
-        <p className="font-body text-gray-600 dark:text-gray-300">
-          Tell me about your video vision, I&apos;ll get back to you with a
-          personalized quote and timeline.
-        </p>
+    <div className="w-full rounded-xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-gray-700 dark:bg-gray-800">
+      <h1 className="mb-2 font-display font-extrabold text-3xl text-gray-900 dark:text-gray-100">
+        Start Your Project
+      </h1>
+      <p className="mb-6 font-body text-gray-600 dark:text-gray-300">
+        Tell me about your video vision, I&apos;ll get back to you with a
+        personalized quote and timeline.
+      </p>
 
-        <Form
-          action={formAction}
-          aria-busy={isPending}
-          className="space-y-6"
-          id="contact-form"
+      <Form
+        action={formAction}
+        aria-busy={isPending}
+        className="space-y-6"
+        id="contact-form"
+      >
+        <StatusMessage
+          isPending={isPending}
+          message={state.message}
+          status={state.status}
+        />
+
+        <ContactFormFields
+          formLoadTime={formLoadTime}
+          onVisionChange={handleVisionChange}
+          state={state}
+          visionLength={visionLength}
+          visionRef={visionRef}
+        />
+
+        {/* Submit Button */}
+        <button
+          className="flex w-full justify-center rounded-lg border border-transparent bg-primary px-4 py-3 font-bold text-black text-lg shadow-lg transition duration-300 ease-in-out hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 dark:bg-primary dark:hover:bg-primary/90"
+          disabled={state.status === "loading" || isPending}
+          type="submit"
         >
-          <StatusMessage
-            isPending={isPending}
-            message={state.message}
-            status={state.status}
-          />
-
-          <ContactFormFields
-            formLoadTime={formLoadTime}
-            onVisionChange={handleVisionChange}
-            state={state}
-            visionLength={visionLength}
-            visionRef={visionRef}
-          />
-
-          {/* Submit Button */}
-          <button
-            className="flex w-full justify-center rounded-lg border border-transparent bg-primary px-4 py-3 font-bold text-black text-lg shadow-lg transition duration-300 ease-in-out hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 dark:bg-primary dark:hover:bg-primary/90"
-            disabled={state.status === "loading" || isPending}
-            type="submit"
-          >
-            {state.status === "loading" || isPending
-              ? "Sending..."
-              : "SEND MY PROJECT BRIEF"}
-          </button>
-        </Form>
-      </div>
+          {state.status === "loading" || isPending
+            ? "Sending..."
+            : "SEND MY PROJECT BRIEF"}
+        </button>
+      </Form>
     </div>
   );
 }
