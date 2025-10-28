@@ -14,10 +14,10 @@ type HeroProps = {
 };
 
 export default function Hero({
-  desktopVideoId = "282995_tiny_v9w8sa.mp4",
-  mobileVideoId = "307864_tiny_p3smba.mp4",
-  desktopPosterUrl = "https://res.cloudinary.com/dulwhlyqt/image/upload/v1761137699/desktop-static_vjfngo.png",
-  mobilePosterUrl = "https://res.cloudinary.com/dulwhlyqt/image/upload/v1761137699/mobile-static_t1ogyd.png",
+  desktopVideoId = "capcutreel_v0suld.mp4",
+  mobileVideoId = "capcutreel_v0suld.mp4",
+  desktopPosterUrl = "https://res.cloudinary.com/dulwhlyqt/image/upload/v1761640239/capcutreel-static_k13vdk.jpg",
+  mobilePosterUrl = "https://res.cloudinary.com/dulwhlyqt/image/upload/v1761640239/capcutreel-static_k13vdk.jpg",
   overlayContent,
   className = "",
 }: HeroProps) {
