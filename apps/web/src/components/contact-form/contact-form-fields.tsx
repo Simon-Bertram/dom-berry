@@ -52,10 +52,7 @@ export function ContactFormFields({
           error={state.errors.name}
           htmlFor="name"
           icon={
-            <User
-              className="mr-2 text-indigo-600 dark:text-indigo-400"
-              size={16}
-            />
+            <User className="mr-2 text-primary dark:text-primary" size={16} />
           }
           label="Your Name"
         >
@@ -63,10 +60,10 @@ export function ContactFormFields({
             aria-describedby={state.errors.name ? "name-error" : undefined}
             aria-invalid={!!state.errors.name}
             aria-required="true"
-            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
+            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
               state.errors.name
                 ? "border-red-500 focus:border-red-500"
-                : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
+                : "border-gray-300 focus:border-primary dark:border-gray-600"
             }`}
             id="name"
             maxLength={100}
@@ -80,10 +77,7 @@ export function ContactFormFields({
           error={state.errors.email}
           htmlFor="email"
           icon={
-            <Mail
-              className="mr-2 text-indigo-600 dark:text-indigo-400"
-              size={16}
-            />
+            <Mail className="mr-2 text-primary dark:text-primary" size={16} />
           }
           label="Email Address"
         >
@@ -91,10 +85,10 @@ export function ContactFormFields({
             aria-describedby={state.errors.email ? "email-error" : undefined}
             aria-invalid={!!state.errors.email}
             aria-required="true"
-            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
+            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
               state.errors.email
                 ? "border-red-500 focus:border-red-500"
-                : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
+                : "border-gray-300 focus:border-primary dark:border-gray-600"
             }`}
             id="email"
             maxLength={254}
@@ -109,7 +103,7 @@ export function ContactFormFields({
           htmlFor="projectType"
           icon={
             <PenTool
-              className="mr-2 text-indigo-600 dark:text-indigo-400"
+              className="mr-2 text-primary dark:text-primary"
               size={16}
             />
           }
@@ -122,10 +116,10 @@ export function ContactFormFields({
               }
               aria-invalid={!!state.errors.projectType}
               aria-required="true"
-              className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
+              className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
                 state.errors.projectType
                   ? "border-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
+                  : "border-gray-300 focus:border-primary dark:border-gray-600"
               }`}
               defaultValue=""
               id="projectType"
@@ -149,7 +143,7 @@ export function ContactFormFields({
           htmlFor="projectBudget"
           icon={
             <PoundSterling
-              className="mr-2 text-indigo-600 dark:text-indigo-400"
+              className="mr-2 text-primary dark:text-primary"
               size={16}
             />
           }
@@ -162,10 +156,10 @@ export function ContactFormFields({
               }
               aria-invalid={!!state.errors.projectBudget}
               aria-required="true"
-              className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
+              className={`w-full appearance-none rounded-lg border bg-white p-3 pr-10 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
                 state.errors.projectBudget
                   ? "border-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
+                  : "border-gray-300 focus:border-primary dark:border-gray-600"
               }`}
               defaultValue=""
               id="projectBudget"
@@ -191,7 +185,7 @@ export function ContactFormFields({
         htmlFor="vision"
         icon={
           <MessageSquare
-            className="mr-2 text-indigo-600 dark:text-indigo-400"
+            className="mr-2 text-primary dark:text-primary"
             size={16}
           />
         }
@@ -202,10 +196,10 @@ export function ContactFormFields({
             aria-describedby={state.errors.vision ? "vision-error" : undefined}
             aria-invalid={!!state.errors.vision}
             aria-required="true"
-            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 ${
+            className={`w-full rounded-lg border bg-white p-3 text-gray-900 transition duration-150 focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-gray-100 ${
               state.errors.vision
                 ? "border-red-500 focus:border-red-500"
-                : "border-gray-300 focus:border-indigo-500 dark:border-gray-600"
+                : "border-gray-300 focus:border-primary dark:border-gray-600"
             }`}
             id="vision"
             maxLength={2000}

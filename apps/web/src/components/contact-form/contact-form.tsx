@@ -76,7 +76,7 @@ export default function ContactForm() {
 
           {/* Submit Button */}
           <button
-            className="flex w-full justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-3 font-bold text-lg text-white shadow-lg transition duration-300 ease-in-out hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+            className="flex w-full justify-center rounded-lg border border-transparent bg-primary px-4 py-3 font-bold text-black text-lg shadow-lg transition duration-300 ease-in-out hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 dark:bg-primary dark:hover:bg-primary/90"
             disabled={state.status === "loading" || isPending}
             type="submit"
           >

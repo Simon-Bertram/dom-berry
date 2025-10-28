@@ -32,7 +32,7 @@ export default function HomePageContent({
               Recent Projects
             </h2>
             <Link
-              className="text-indigo-600 underline underline-offset-4 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              className="text-indigo-600 underline underline-offset-4 transition-colors hover:text-indigo-700 dark:text-primary dark:hover:text-primary/80"
               href="/portfolio"
               onClick={handlePortfolioClick}
             >
@@ -77,7 +77,7 @@ export default function HomePageContent({
               Latest Testimonials
             </h2>
             <Link
-              className="text-indigo-600 underline underline-offset-4 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+              className="text-indigo-600 underline underline-offset-4 transition-colors hover:text-indigo-700 dark:text-primary dark:hover:text-primary/80"
               href="/testimonials"
             >
               Read more

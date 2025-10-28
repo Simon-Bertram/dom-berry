@@ -14,8 +14,9 @@ export default function Header() {
         <Logo />
         <NavItems className="hidden items-center gap-8 lg:flex" />
         <div className="flex items-center gap-3">
-          <Button asChild className="hidden lg:inline-flex">
+          <Button asChild className="hidden text-black lg:inline-flex">
             <Link
+              className="text-black"
               href="/contact"
               onClick={() => trackButtonClick("Start your project", "/")}
             >

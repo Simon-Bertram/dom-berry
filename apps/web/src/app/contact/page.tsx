@@ -49,7 +49,7 @@ export default function ContactPage() {
                 </h2>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
-                    <span className="text-indigo-600 text-xl">📍</span>
+                    <span className="text-primary text-xl">📍</span>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-gray-100">
                         Address
@@ -66,13 +66,13 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-indigo-600 text-xl">📞</span>
+                    <span className="text-primary text-xl">📞</span>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-gray-100">
                         Phone
                       </p>
                       <a
-                        className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                        className="text-primary hover:text-primary/90 dark:text-primary dark:hover:text-primary/90"
                         href={`tel:${BUSINESS_INFO.contact.phone}`}
                       >
                         {BUSINESS_INFO.contact.phone}
@@ -81,13 +81,13 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="text-indigo-600 text-xl">✉️</span>
+                    <span className="text-primary text-xl">✉️</span>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-gray-100">
                         Email
                       </p>
                       <a
-                        className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                        className="text-primary hover:text-primary/90 dark:text-primary dark:hover:text-primary/90"
                         href={`mailto:${BUSINESS_INFO.contact.email}`}
                       >
                         {BUSINESS_INFO.contact.email}
@@ -108,7 +108,7 @@ export default function ContactPage() {
                 <div className="flex flex-wrap gap-2">
                   {BUSINESS_INFO.serviceAreas.map((area) => (
                     <span
-                      className="rounded-full bg-indigo-100 px-3 py-1 text-indigo-800 text-sm dark:bg-indigo-900 dark:text-indigo-200"
+                      className="rounded-full bg-primary/10 px-3 py-1 text-primary text-sm dark:bg-primary/20 dark:text-primary"
                       key={area}
                     >
                       {area}
