@@ -22,7 +22,7 @@ export function EmailProtection({
   const [isRevealed, setIsRevealed] = useState(false);
   const [displayEmail, setDisplayEmail] = useState(displayText);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isRevealed) {
       window.location.href = `mailto:${email}`;
@@ -80,7 +80,7 @@ export function ObfuscatedEmail({
   // Obfuscate email by replacing middle characters with dots
   const obfuscateEmail = (emailToObfuscate: string) => {
     const [localPart, domain] = emailToObfuscate.split("@");
-    if (localPart.length <= 2) {
+    if (!(localPart && domain) || localPart.length <= 2) {
       return emailToObfuscate;
     }
 
