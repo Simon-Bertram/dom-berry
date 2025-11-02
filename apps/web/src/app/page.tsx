@@ -1,3 +1,4 @@
+import Hero from "@/components/hero/hero";
 import HomePageContent from "@/components/home-page-content";
 import { getAllPortfolioProjects, getAllTestimonials } from "@/lib/content";
 
@@ -16,5 +17,10 @@ export default function Home() {
 
   const testimonials = getAllTestimonials().slice(0, NUM_HOMEPAGE_ITEMS);
 
-  return <HomePageContent projects={projects} testimonials={testimonials} />;
+  return (
+    <>
+      <Hero />
+      <HomePageContent projects={projects} testimonials={testimonials} />
+    </>
+  );
 }
