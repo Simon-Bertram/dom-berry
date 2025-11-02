@@ -23,11 +23,32 @@ export default function VideoBg() {
         loop
         muted
         onError={(error: unknown) => {
-          console.error("Video error:", error);
+          // Cloudinary Video.js error objects have player and video properties
+          if (
+            error &&
+            typeof error === "object" &&
+            "video" in error &&
+            error.video
+          ) {
+            const videoElement = error.video as HTMLVideoElement;
+            const errorCode = videoElement.error?.code;
+            const errorMessage = videoElement.error?.message;
+
+            if (errorCode !== undefined && errorMessage) {
+              // biome-ignore lint/suspicious/noConsole: Error logging for debugging
+              console.error("Video playback error:", {
+                code: errorCode,
+                message: errorMessage,
+              });
+            }
+          } else {
+            // biome-ignore lint/suspicious/noConsole: Error logging for debugging
+            console.error("Video error:", error);
+          }
         }}
         playsinline
         preload="auto"
-        src="https://res.cloudinary.com/dulwhlyqt/video/upload/v1762102155/second-edit_ib52t7.mp4"
+        src="https://res.cloudinary.com/dulwhlyqt/video/upload/v1762102155/second-edit_ib52t7"
         width="1920"
       />
       {needsUserGesture ? (

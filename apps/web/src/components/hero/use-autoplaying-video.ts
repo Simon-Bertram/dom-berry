@@ -63,6 +63,7 @@ export function useAutoplayingCloudinaryVideo(options: AutoplayOptions = {}) {
             setNeedsUserGesture(false);
           })
           .catch((error: unknown) => {
+            // biome-ignore lint/suspicious/noConsole: Error logging for debugging
             console.warn(
               "Autoplay was blocked. Prompting user interaction.",
               error
@@ -104,6 +105,7 @@ export function useAutoplayingCloudinaryVideo(options: AutoplayOptions = {}) {
                 setNeedsUserGesture(false);
               })
               .catch((error: unknown) => {
+                // biome-ignore lint/suspicious/noConsole: Error logging for debugging
                 console.warn(
                   "Autoplay was blocked. Prompting user interaction.",
                   error
