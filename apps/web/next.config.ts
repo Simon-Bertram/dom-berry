@@ -1,11 +1,18 @@
 import type { NextConfig } from "next";
 
+const cloudinaryCloudName =
+  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "dulwhlyqt";
+
 const nextConfig: NextConfig = {
   typedRoutes: true,
   output: "standalone", // Smaller Docker images for deployment
   experimental: {
     optimizePackageImports: ["lucide-react"], // Reduce bundle size
     optimizeCss: true, // Optimize CSS including font loading
+  },
+  env: {
+    // Ensure next-cloudinary always receives a cloud name during build/prerender
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: cloudinaryCloudName,
   },
   images: {
     formats: ["image/avif", "image/webp"], // Smaller images
@@ -14,7 +21,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "", // Leave as empty string for standard HTTPS port (443)
-        pathname: "/dulwhlyqt/**", // Crucial: This should be specific to your Cloudinary cloud name
+        pathname: `/${cloudinaryCloudName}/**`, // Crucial: This should match your Cloudinary cloud name
       },
     ],
   },
@@ -23,7 +30,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   // Support PostHog rewrites
-  async rewrites() {
+  rewrites() {
     return [
       {
         source: "/ingest/static/:path*",
